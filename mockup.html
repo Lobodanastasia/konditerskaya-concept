@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Бархат — макет сайта</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bad+Script&family=Cormorant+Garamond:wght@500;600&family=Great+Vibes&family=Manrope:wght@400;500;600;700&display=swap&subset=cyrillic" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script src="_tw.js"></script>
+<style>
+  .frame{position:relative;overflow:hidden;background:#fff}
+  .frame iframe{position:absolute;top:0;left:0;border:0;transform-origin:0 0}
+</style>
+</head>
+<body class="bg-[#EDE6DE] text-cocoa font-sans antialiased">
+<div class="mx-auto max-w-[1500px] px-4 sm:px-8 py-10">
+
+  <header class="flex flex-wrap items-end justify-between gap-6 mb-6">
+    <div>
+      <p class="text-[12px] uppercase tracking-[.2em] text-cocoa/55">Концепт сайта-визитки · направление A «Арка»</p>
+      <h1 class="font-script text-wine text-[64px] leading-none mt-2">Бархат</h1>
+    </div>
+    <nav class="flex flex-wrap gap-2 text-[14px]">
+      <a href="#site" class="h-11 inline-flex items-center rounded-full bg-wine text-cream-light px-5">Сайт целиком</a>
+      <a href="#builder" class="h-11 inline-flex items-center rounded-full bg-cream-light px-5">Конструктор</a>
+      <a href="#motion" class="h-11 inline-flex items-center rounded-full bg-cream-light px-5">Анимации</a>
+      <a href="#system" class="h-11 inline-flex items-center rounded-full bg-cream-light px-5">Стиль</a>
+    </nav>
+  </header>
+  <p class="max-w-3xl text-[15px] text-cocoa/70 mb-12">Макеты кликабельные: на сайте работают меню, выбор начинки и фильтры галереи, конструктор можно пройти целиком. В рамках ниже конструктор показан с заполненным примером заказа, а открытый по ссылке «Сайт отдельно» начинается с чистого листа. Каждый экран открывается отдельно по ссылке под ним. Фото временные (Unsplash), данные и цены демонстрационные.</p>
+
+  <!-- ===== Сайт целиком ===== -->
+  <section id="site" class="mb-20">
+    <h2 class="font-serif text-[34px] leading-none mb-2">Сайт целиком</h2>
+    <p class="text-[14px] text-cocoa/65 mb-6">Первый экран → ассортимент → начинки (бордовая секция, разрез со стрелками и раскрытая карточка) → анонс конструктора → галерея → о кондитере → доставка и вопросы → подвал.</p>
+    <div class="grid lg:grid-cols-[1fr_320px] gap-6 items-start">
+      <div>
+        <p class="text-[13px] font-semibold mb-2">Компьютер · 1440</p>
+        <div class="frame rounded-2xl shadow-xl" data-w="1440" data-h="6840"><iframe src="index.html" width="1440" height="6840" scrolling="no" title="Сайт — компьютер"></iframe></div>
+      </div>
+      <div class="lg:sticky lg:top-6">
+        <p class="text-[13px] font-semibold mb-2">Телефон · 390</p>
+        <div class="frame rounded-[28px] ring-[8px] ring-cocoa shadow-xl" data-w="390" data-h="9230"><iframe src="index.html" width="390" height="9230" scrolling="no" title="Сайт — телефон"></iframe></div>
+      </div>
+    </div>
+    <p class="mt-3 text-[13px]"><a class="underline text-wine" href="./">Открыть сайт отдельно →</a></p>
+  </section>
+
+  <!-- ===== Конструктор ===== -->
+  <section id="builder" class="mb-20">
+    <h2 class="font-serif text-[34px] leading-none mb-2">Конструктор заказа</h2>
+    <p class="text-[14px] text-cocoa/65 mb-8 max-w-3xl">На компьютере справа всегда видна панель «Ваш десерт»: что уже выбрано, ссылки «изм.» для возврата к шагу и ориентировочная цена. На телефоне сверху прогресс из 7 сегментов, снизу закреплены цена и кнопки «Назад» и «Далее». Выбранные варианты отмечены бордовой заливкой, галочкой и золотой обводкой.</p>
+    <div id="screens" class="grid gap-14"></div>
+  </section>
+
+  <!-- ===== Анимации ===== -->
+  <section id="motion" class="mb-20">
+    <h2 class="font-serif text-[34px] leading-none mb-6">Предполагаемые анимации</h2>
+    <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-4 text-[14px] leading-relaxed">
+      <article class="rounded-[24px] bg-cream-light p-5"><p class="font-hand text-berry text-[18px]">первый экран</p><h3 class="font-semibold text-[16px] mt-1">Мягкое появление</h3><p class="mt-2 text-cocoa/70">Заголовок и текст поднимаются на 24 px и проявляются (0,8 с). Бейдж «ручная работа» медленно вращается, один оборот за 24 с. Стрелка в кнопке на наведении сдвигается на 4 px.</p></article>
+      <article class="rounded-[24px] bg-cream-light p-5"><p class="font-hand text-berry text-[18px]">начинки</p><h3 class="font-semibold text-[16px] mt-1">Стрелки рисуются к слоям</h3><p class="mt-2 text-cocoa/70">Когда разрез попадает в экран, золотые линии «прорисовываются» по очереди (1,1 с, шаг 0,15 с), за ними проявляются подписи. Это фирменный приём сайта, других «вау-эффектов» нет.</p></article>
+      <article class="rounded-[24px] bg-cream-light p-5"><p class="font-hand text-berry text-[18px]">карточка начинки</p><h3 class="font-semibold text-[16px] mt-1">Раскрытие в панель</h3><p class="mt-2 text-cocoa/70">На компьютере панель выезжает справа, на телефоне снизу (0,4 с), фон затемняется. Закрывается свайпом вниз, крестиком или клавишей Esc.</p></article>
+      <article class="rounded-[24px] bg-cream-light p-5"><p class="font-hand text-berry text-[18px]">конструктор</p><h3 class="font-semibold text-[16px] mt-1">Переход между шагами</h3><p class="mt-2 text-cocoa/70">Новый шаг заезжает на 16 px и проявляется (0,35 с), сегмент прогресса заполняется. Цена в панели плавно пересчитывается (0,4 с) — видно, как меняется сумма.</p></article>
+      <article class="rounded-[24px] bg-cream-light p-5"><p class="font-hand text-berry text-[18px]">выбор</p><h3 class="font-semibold text-[16px] mt-1">Отклик на нажатие</h3><p class="mt-2 text-cocoa/70">Карточка заливается бордовым (0,2 с), галочка «вырастает» из 60% (0,15 с), появляется золотая обводка. На телефоне есть лёгкое нажатие: карточка уменьшается до 98%.</p></article>
+      <article class="rounded-[24px] bg-cream-light p-5"><p class="font-hand text-berry text-[18px]">фото-референс</p><h3 class="font-semibold text-[16px] mt-1">Загрузка</h3><p class="mt-2 text-cocoa/70">Превью сразу проявляется, по нижнему краю бежит тонкая полоска прогресса, затем подпись «загружено». При перетаскивании зона подсвечивается бордовой пунктирной рамкой.</p></article>
+      <article class="rounded-[24px] bg-cream-light p-5"><p class="font-hand text-berry text-[18px]">ассортимент и галерея</p><h3 class="font-semibold text-[16px] mt-1">Фото «дышат»</h3><p class="mt-2 text-cocoa/70">При наведении фото приближается на 4% (0,7 с), стрелка в круге поворачивается. Плитки галереи появляются лесенкой при прокрутке, фильтр плавно перестраивает сетку (0,3 с).</p></article>
+      <article class="rounded-[24px] bg-cream-light p-5"><p class="font-hand text-berry text-[18px]">вопросы и шапка</p><h3 class="font-semibold text-[16px] mt-1">Спокойные мелочи</h3><p class="mt-2 text-cocoa/70">Ответ плавно раскрывается, «+» поворачивается в «×». Шапка при прокрутке становится полупрозрачной с размытием фона.</p></article>
+      <article class="rounded-[24px] bg-wine text-cream-light p-5"><p class="font-hand text-cream/80 text-[18px]">доступность</p><h3 class="font-semibold text-[16px] mt-1">Без лишнего движения</h3><p class="mt-2 text-cream/80">Анимируются только transform и opacity. Если в системе включено «уменьшить движение», всё показывается сразу, без анимаций. Нет автокаруселей и перехвата прокрутки.</p></article>
+    </div>
+  </section>
+
+  <!-- ===== Стиль ===== -->
+  <section id="system" class="mb-16">
+    <h2 class="font-serif text-[34px] leading-none mb-6">Стиль</h2>
+    <div class="grid lg:grid-cols-2 gap-4">
+      <div class="rounded-[24px] bg-cream-light p-6">
+        <p class="text-[12px] uppercase tracking-[.14em] text-cocoa/55 mb-4">Палитра</p>
+        <div class="grid grid-cols-4 sm:grid-cols-8 gap-3 text-[11px]">
+          <div><div class="aspect-square rounded-2xl bg-cream-light ring-1 ring-cocoa/10"></div><p class="mt-1">#FBF6EF</p></div>
+          <div><div class="aspect-square rounded-2xl bg-cream"></div><p class="mt-1">#F6EDE3</p></div>
+          <div><div class="aspect-square rounded-2xl bg-wine"></div><p class="mt-1">#5E0F1F</p></div>
+          <div><div class="aspect-square rounded-2xl bg-wine-dark"></div><p class="mt-1">#45091A</p></div>
+          <div><div class="aspect-square rounded-2xl bg-berry"></div><p class="mt-1">#B3263E</p></div>
+          <div><div class="aspect-square rounded-2xl bg-cocoa"></div><p class="mt-1">#2B1A17</p></div>
+          <div><div class="aspect-square rounded-2xl bg-pistachio"></div><p class="mt-1">#9DB07A</p></div>
+          <div><div class="aspect-square rounded-2xl bg-gold"></div><p class="mt-1">#B8955A</p></div>
+        </div>
+      </div>
+      <div class="rounded-[24px] bg-cream-light p-6 grid gap-3">
+        <p class="text-[12px] uppercase tracking-[.14em] text-cocoa/55">Шрифты</p>
+        <p class="font-script text-wine text-[52px] leading-none">Great Vibes — акцент</p>
+        <p class="font-serif uppercase tracking-[.06em] text-[24px]">Cormorant — подзаголовки</p>
+        <p class="font-hand text-berry text-[22px]">Bad Script — подписи и стрелки</p>
+        <p class="text-[16px]">Manrope — текст, кнопки и форма. Хорошо читается и в полях ввода.</p>
+      </div>
+    </div>
+  </section>
+
+  <p class="text-center text-[12px] text-cocoa/50">Концепт сайта. Данные и цены демонстрационные.</p>
+</div>
+
+<script>
+const SCREENS=[
+  ['1','Шаг 1 · Повод','8 вариантов, выбран «День рождения». У каждого короткая подсказка.',1050],
+  ['2','Шаг 2 · Вид десерта','Карточки с фото и ценой «от». Выбранная карточка — бордовая, с галочкой.',1210],
+  ['3','Шаг 3 · Количество','Счётчик гостей и подсказка веса: 12 гостей → 2 кг. Для капкейков вместо веса будет счётчик штук.',1100],
+  ['4','Шаг 4 · Начинка — выбранная карточка','«Фисташка–малина» выбрана, она же появилась в панели «Ваш десерт» и в цене.',1100],
+  ['4&drawer=redvelvet','Раскрытая начинка','Разрез со стрелками к слоям, вкус, состав, аллергены, цена за кг и кнопка «Выбрать начинку». На телефоне — нижняя шторка.',900],
+  ['5','Шаг 5 · Оформление + загруженный референс','Палитра, несколько стилей декора с доплатой, надпись со счётчиком символов, пожелания, загруженное фото с именем файла и кнопкой удаления.',1320],
+  ['6','Шаг 6 · Дата и получение','Календарь с занятыми датами, переключатель «доставка / самовывоз», адрес и окно доставки.',1120],
+  ['7','Шаг 7 · Контакты','Имя, способ связи, контакт, пищевые ограничения для обсуждения, комментарий и согласие.',1120],
+  ['8','Итоговая заявка','Каждый раздел с кнопкой «Изменить», расчёт с вилкой цены, пометка о подтверждении кондитером, превью сообщения в Telegram, кнопки «Отправить в Telegram» и «Скопировать заявку».',1520],
+];
+document.getElementById('screens').innerHTML=SCREENS.map(([s,t,d,h])=>`
+  <article>
+    <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1 mb-3"><h3 class="text-[20px] font-bold">${t}</h3><a class="text-[13px] underline text-wine" href="builder.html?step=${s}&demo=1">открыть →</a></div>
+    <p class="text-[14px] text-cocoa/65 mb-4 max-w-3xl">${d}</p>
+    <div class="grid lg:grid-cols-[1fr_260px] gap-6 items-start">
+      <div class="frame rounded-2xl shadow-xl" data-w="1440" data-h="${h}"><iframe src="builder.html?step=${s}&demo=1" width="1440" height="${h}" scrolling="no" loading="lazy" title="${t} — компьютер"></iframe></div>
+      <div class="frame rounded-[28px] ring-[8px] ring-cocoa shadow-xl mx-auto w-[260px]" data-w="390" data-h="844"><iframe src="builder.html?step=${s}&demo=1" width="390" height="844" loading="lazy" title="${t} — телефон"></iframe></div>
+    </div>
+  </article>`).join('');
+
+// Масштаб iframe под ширину рамки, вьюпорт внутри — реальный (1440 / 390)
+const fit=f=>{const w=+f.dataset.w,h=+f.dataset.h,s=f.clientWidth/w;f.style.height=(h*s)+'px';f.querySelector('iframe').style.transform=`scale(${s})`};
+document.querySelectorAll('.frame').forEach(f=>new ResizeObserver(()=>fit(f)).observe(f));
+</script>
+</body>
+</html>

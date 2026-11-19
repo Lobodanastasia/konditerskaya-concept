@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Бархат — десерты на заказ (концепт)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bad+Script&family=Cormorant+Garamond:wght@500;600&family=Great+Vibes&family=Manrope:wght@400;500;600;700&display=swap&subset=cyrillic" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script src="_tw.js"></script>
+<script src="_data.js"></script>
+<style>
+  html{scroll-behavior:smooth}
+  .no-scrollbar::-webkit-scrollbar{display:none}.no-scrollbar{scrollbar-width:none}
+  .draw path{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.1s cubic-bezier(.2,.7,.2,1) forwards}
+  .draw g:nth-child(2) path{animation-delay:.15s}.draw g:nth-child(3) path{animation-delay:.3s}.draw g:nth-child(4) path{animation-delay:.45s}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  details summary::-webkit-details-marker{display:none}
+  details[open] .plus{transform:rotate(45deg)}
+  #galGrid.filtered figure{grid-row:span 1 / span 1!important;grid-column:span 1 / span 1!important}
+  .fade-in{animation:fadein .4s cubic-bezier(.2,.7,.2,1) both}@keyframes fadein{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .menu-in{animation:menuin .35s cubic-bezier(.2,.8,.2,1) both}@keyframes menuin{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
+  :focus-visible{outline:2px solid #B3263E;outline-offset:2px}
+  @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}.draw path{stroke-dashoffset:0}}
+</style>
+</head>
+<body class="bg-cream-light text-cocoa font-sans antialiased">
+
+<!-- ============ ШАПКА ============ -->
+<header class="sticky top-0 z-40 bg-cream-light/80 backdrop-blur-md border-b border-cocoa/5">
+  <div class="mx-auto max-w-[1360px] px-4 sm:px-8 h-16 lg:h-20 flex items-center justify-between">
+    <a href="#" class="flex items-baseline gap-2">
+      <span class="font-script text-wine text-[34px] lg:text-[40px] leading-none">Бархат</span>
+      <span class="hidden sm:inline text-[11px] uppercase tracking-[.2em] text-cocoa/60">десерты на заказ</span>
+    </a>
+    <nav class="hidden lg:flex items-center gap-8 text-[15px] text-cocoa/80">
+      <a href="#assort" class="hover:text-wine">Ассортимент</a>
+      <a href="#fillings" class="hover:text-wine">Начинки</a>
+      <a href="#gallery" class="hover:text-wine">Галерея</a>
+      <a href="#delivery" class="hover:text-wine">Доставка</a>
+    </nav>
+    <div class="flex items-center gap-2">
+      <a href="builder.html?step=1" target="_top" class="hidden sm:inline-flex h-11 items-center rounded-full bg-wine px-5 text-sm font-semibold text-cream-light hover:bg-wine-dark transition">Собрать десерт</a>
+      <button id="menuBtn" class="lg:hidden grid place-items-center w-11 h-11 rounded-full bg-wine text-cream-light" aria-label="Открыть меню" aria-expanded="false" aria-controls="mobileMenu">
+        <svg width="18" height="12" viewBox="0 0 18 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M0 1h18M0 6h18M6 11h12"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- мобильное меню -->
+<div id="mobileMenu" class="lg:hidden fixed inset-0 z-50 hidden">
+  <div data-close class="absolute inset-0 bg-cocoa/40 backdrop-blur-sm"></div>
+  <nav class="menu-in absolute inset-x-3 top-3 rounded-[32px] bg-wine text-cream-light p-6 pb-7 shadow-2xl" aria-label="Меню">
+    <div class="flex items-center justify-between"><span class="font-script text-[34px] leading-none text-cream">Бархат</span>
+      <button data-close class="grid place-items-center w-11 h-11 rounded-full bg-cream-light/10 ring-1 ring-cream/20" aria-label="Закрыть меню"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 1l10 10M11 1L1 11"/></svg></button></div>
+    <ul class="mt-5">
+      <li><a data-close href="#assort" class="flex items-center justify-between py-3.5 border-b border-cream/10 font-serif text-[28px]">Ассортимент <span class="text-cream/40 text-[18px]">01</span></a></li>
+      <li><a data-close href="#fillings" class="flex items-center justify-between py-3.5 border-b border-cream/10 font-serif text-[28px]">Начинки <span class="text-cream/40 text-[18px]">02</span></a></li>
+      <li><a data-close href="#gallery" class="flex items-center justify-between py-3.5 border-b border-cream/10 font-serif text-[28px]">Галерея <span class="text-cream/40 text-[18px]">03</span></a></li>
+      <li><a data-close href="#about" class="flex items-center justify-between py-3.5 border-b border-cream/10 font-serif text-[28px]">О кондитере <span class="text-cream/40 text-[18px]">04</span></a></li>
+      <li><a data-close href="#delivery" class="flex items-center justify-between py-3.5 border-b border-cream/10 font-serif text-[28px]">Доставка и вопросы <span class="text-cream/40 text-[18px]">05</span></a></li>
+    </ul>
+    <a href="builder.html" target="_top" class="mt-7 flex h-14 items-center justify-center rounded-full bg-cream-light text-wine font-semibold">Собрать свой десерт</a>
+    <p class="mt-4 text-center text-[13px] text-cream/60">Отвечаю в Telegram в течение дня</p>
+  </nav>
+</div>
+
+<main>
+<!-- ============ 1. ПЕРВЫЙ ЭКРАН ============ -->
+<section class="relative overflow-hidden">
+  <div class="pointer-events-none absolute -right-40 top-10 w-[720px] h-[720px] rounded-full bg-cream"></div>
+  <div class="relative mx-auto max-w-[1360px] px-4 sm:px-8 pt-6 lg:pt-10 pb-10 lg:pb-14 grid lg:grid-cols-12 gap-8 lg:gap-6 items-center">
+    <div class="lg:col-span-6 order-2 lg:order-1 animate-rise">
+      <p class="inline-flex items-center gap-2 rounded-full bg-cream px-4 py-2 text-[13px] text-cocoa/80"><span class="w-2 h-2 rounded-full bg-pistachio"></span> Принимаю заказы на декабрь</p>
+      <h1 class="mt-5 lg:mt-7">
+        <span class="block font-script text-wine text-[76px] sm:text-[104px] lg:text-[148px] leading-[.8] -ml-1">Десерты</span>
+        <span class="block font-serif uppercase text-cocoa text-[26px] sm:text-[34px] lg:text-[44px] leading-[1.05] tracking-[.04em] mt-3 lg:mt-1 lg:pl-28">под ваш повод <br>и ваш вкус</span>
+      </h1>
+      <p class="mt-5 lg:mt-7 max-w-[30rem] text-[16px] lg:text-[18px] leading-relaxed text-cocoa/75">Торты, бенто и капкейки ручной работы. Выберите начинку, оформление и дату — я&nbsp;подтвержу детали и&nbsp;цену в&nbsp;течение дня.</p>
+      <div class="mt-7 lg:mt-9 flex flex-col sm:flex-row gap-3 sm:gap-0 sm:inline-flex sm:rounded-full sm:border sm:border-wine/30 sm:p-1">
+        <a href="builder.html?step=1" target="_top" class="group inline-flex h-14 items-center justify-center gap-3 rounded-full bg-wine px-8 text-[16px] font-semibold text-cream-light shadow-[0_12px_30px_-12px_rgba(94,15,31,.6)] hover:bg-wine-dark transition">Собрать свой десерт
+          <svg class="transition-transform group-hover:translate-x-1" width="18" height="12" viewBox="0 0 18 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M0 6h16M11 1l5 5-5 5"/></svg></a>
+        <a href="#fillings" class="inline-flex h-14 items-center justify-center px-7 text-[16px] font-medium text-wine rounded-full border border-wine/30 sm:border-0 hover:underline underline-offset-4">Смотреть начинки</a>
+      </div>
+      <dl class="mt-9 lg:mt-12 grid grid-cols-3 max-w-[30rem] divide-x divide-gold/40 border-t border-gold/40 pt-5">
+        <div class="pr-3"><dt class="text-[12px] uppercase tracking-[.14em] text-cocoa/55">начинок</dt><dd class="font-serif text-[26px] lg:text-[32px] text-wine leading-none mt-1">6</dd></div>
+        <div class="px-3 sm:px-5"><dt class="text-[12px] uppercase tracking-[.14em] text-cocoa/55">бенто</dt><dd class="font-serif text-[26px] lg:text-[32px] text-wine leading-none mt-1 whitespace-nowrap">от 1 900 <span class="font-sans text-[.7em]">₽</span></dd></div>
+        <div class="pl-3 sm:pl-5"><dt class="text-[12px] uppercase tracking-[.14em] text-cocoa/55">заказ</dt><dd class="font-serif text-[26px] lg:text-[32px] text-wine leading-none mt-1 whitespace-nowrap">за 3 дня</dd></div>
+      </dl>
+    </div>
+    <div class="lg:col-span-6 order-1 lg:order-2 relative flex justify-center lg:justify-end">
+      <div class="relative w-[78%] sm:w-[60%] lg:w-[min(520px,88%)]">
+        <div class="relative aspect-[4/5] rounded-t-[999px] rounded-b-[48px] overflow-hidden bg-cream-deep shadow-[0_40px_80px_-40px_rgba(94,15,31,.45)]">
+          <img src="https://images.unsplash.com/photo-1761637604698-0f9e9d3278ee?w=1100&q=80&fm=webp" alt="Муссовое пирожное с малиновым глазированным верхом" class="w-full h-full object-cover scale-[1.04]" width="880" height="1100" fetchpriority="high">
+        </div>
+        <div class="absolute -left-3 sm:-left-5 top-[4%] w-[76px] h-[76px] sm:w-[96px] sm:h-[96px] rounded-full bg-wine text-cream-light grid place-items-center shadow-lg">
+          <svg viewBox="0 0 120 120" class="absolute inset-0 animate-spinslow" aria-hidden="true"><defs><path id="c" d="M60,60 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0"/></defs><text font-size="9.5" fill="currentColor" font-family="Manrope" font-weight="600"><textPath href="#c" textLength="272" lengthAdjust="spacing">РУЧНАЯ РАБОТА • БЕЗ КОНСЕРВАНТОВ •</textPath></text></svg>
+          <svg viewBox="0 0 120 120" class="absolute inset-0 w-full h-full" aria-hidden="true"><text x="59" y="61" text-anchor="middle" dominant-baseline="central" font-family="Great Vibes, cursive" font-size="36" fill="currentColor">Б</text></svg><span class="sr-only">Бархат</span>
+        </div>
+        <div class="absolute -right-2 sm:-right-6 lg:-left-16 lg:right-auto bottom-[-18px] lg:bottom-[10%] flex items-center gap-3 rounded-[22px] bg-cream-light/85 backdrop-blur-md p-2 pr-5 shadow-[0_20px_40px_-20px_rgba(43,26,23,.35)] ring-1 ring-white/60">
+          <img src="https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=200&h=200&fit=crop&q=70&fm=webp" alt="" class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover">
+          <div><p class="font-hand text-[13px] text-berry leading-none">начинка недели</p><p class="text-[14px] sm:text-[15px] font-semibold mt-1">Фисташка–малина</p><p class="text-[12px] text-cocoa/60 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-pistachio"></span>3 400 ₽/кг</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2. АССОРТИМЕНТ ============ -->
+<section id="assort" class="py-16 lg:py-24">
+  <div class="mx-auto max-w-[1360px] px-4 sm:px-8">
+    <div class="flex flex-wrap items-end justify-between gap-4 mb-8 lg:mb-12">
+      <h2><span class="block font-script text-wine text-[60px] lg:text-[88px] leading-[.8]">Ассортимент</span>
+        <span class="block font-serif uppercase tracking-[.06em] text-[20px] lg:text-[26px] mt-2 lg:pl-24">четыре формата на любой повод</span></h2>
+      <p class="max-w-sm text-[15px] text-cocoa/70">Цены ориентировочные — точную сумму назову после того, как увижу пожелания по оформлению.</p>
+    </div>
+
+    <div class="grid grid-cols-2 lg:grid-cols-4 lg:grid-rows-2 gap-3 lg:gap-5 lg:h-[620px]">
+      <!-- Торт — крупная карточка -->
+      <a href="builder.html?type=torte" target="_top" class="group col-span-2 lg:row-span-2 relative overflow-hidden rounded-[32px] min-h-[380px] bg-cream">
+        <img src="https://images.unsplash.com/photo-1629389861081-43cc4f172b0c?w=1000&q=75&fm=webp" alt="Белый торт с жемчужинами и розовыми гвоздиками" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]" loading="lazy">
+        <div class="absolute inset-0 bg-gradient-to-t from-cocoa/70 via-cocoa/10 to-transparent"></div>
+        <div class="absolute left-5 right-5 bottom-5 lg:left-8 lg:right-8 lg:bottom-8 text-cream-light flex items-end justify-between gap-4">
+          <div><p class="font-hand text-[18px] text-cream/90">от 2 кг · ярусы</p><h3 class="font-serif text-[34px] lg:text-[48px] leading-none mt-1">Торты на заказ</h3><p class="mt-2 text-[15px] text-cream/80">от 2 800 ₽/кг</p></div>
+          <span class="shrink-0 grid place-items-center w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-cream-light text-wine transition-transform group-hover:rotate-[-45deg]"><svg width="18" height="12" viewBox="0 0 18 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M0 6h16M11 1l5 5-5 5"/></svg></span>
+        </div>
+      </a>
+      <!-- Бенто -->
+      <a href="builder.html?type=bento" target="_top" class="group col-span-2 lg:col-span-2 relative overflow-hidden rounded-[32px] bg-cream grid grid-cols-[1fr_1.1fr] min-h-[200px]">
+        <div class="p-5 lg:p-7 flex flex-col justify-between">
+          <div><h3 class="font-serif text-[28px] lg:text-[36px] leading-none">Бенто-торты</h3><p class="mt-2 text-[14px] text-cocoa/70 max-w-[16rem]">Маленький торт в коробочке на 2–4 человек. Надпись — в подарок.</p></div>
+          <p class="mt-4 text-[15px] font-semibold text-wine">от 1 900 ₽</p>
+        </div>
+        <img src="https://images.unsplash.com/photo-1659679120544-1a968f3003f6?w=700&q=75&fm=webp" alt="Бенто-торт с надписью в коробке" class="w-full h-full object-cover rounded-[28px] transition-transform duration-700 group-hover:scale-[1.04]" loading="lazy">
+      </a>
+      <!-- Капкейки -->
+      <a href="builder.html?type=cupcakes" target="_top" class="group relative overflow-hidden rounded-[32px] bg-wine text-cream-light p-5 lg:p-6 flex flex-col min-h-[260px]">
+        <img src="https://images.unsplash.com/photo-1614707267537-b85aaf00c4b7?w=600&q=75&fm=webp" alt="Капкейк красный бархат" class="absolute right-[-18%] bottom-[-14%] w-[78%] aspect-square object-cover rounded-full ring-8 ring-wine-soft transition-transform duration-700 group-hover:scale-105" loading="lazy">
+        <h3 class="relative font-serif text-[26px] lg:text-[32px] leading-none">Капкейки</h3>
+        <p class="relative mt-2 text-[14px] text-cream/75">от 6 штук</p>
+        <p class="relative mt-auto text-[15px] font-semibold">от 280 ₽/шт</p>
+      </a>
+      <!-- Наборы -->
+      <a href="builder.html?type=set" target="_top" class="group relative overflow-hidden rounded-[32px] bg-cream-deep p-5 lg:p-6 flex flex-col min-h-[260px]">
+        <img src="https://images.unsplash.com/photo-1771016833994-400a164912ac?w=600&q=75&fm=webp" alt="Набор десертов в коробке" class="absolute inset-x-0 bottom-0 h-[58%] w-full object-cover rounded-t-[28px] transition-transform duration-700 group-hover:scale-105" loading="lazy">
+        <h3 class="relative font-serif text-[26px] lg:text-[32px] leading-none">Наборы</h3>
+        <p class="relative mt-2 text-[14px] text-cocoa/70">12 десертов · от 2 400 ₽</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3. НАЧИНКИ (бордовая секция) ============ -->
+<section id="fillings" class="relative bg-wine text-cream-light rounded-t-[40px] lg:rounded-t-[72px] py-16 lg:py-24 overflow-hidden">
+  <div class="mx-auto max-w-[1360px] px-4 sm:px-8">
+    <div class="flex flex-wrap items-end justify-between gap-4 mb-10 lg:mb-14">
+      <h2><span class="block font-script text-cream text-[64px] lg:text-[96px] leading-[.8]">Начинки</span>
+        <span class="block font-serif uppercase tracking-[.06em] text-[20px] lg:text-[26px] mt-2 lg:pl-24 text-cream/90">всё самое вкусное — внутри</span></h2>
+      <p class="max-w-sm text-[15px] text-cream/70">Шесть вкусов, которые хорошо держат форму и красиво смотрятся в разрезе. Цена — за килограмм торта.</p>
+    </div>
+
+    <!-- Раскрытая начинка и каталог (рисуются из _data.js) -->
+    <article id="featured" class="grid lg:grid-cols-12 gap-6 lg:gap-10 items-center rounded-[36px] lg:rounded-[48px] bg-wine-dark/60 ring-1 ring-cream/10 p-3 lg:p-5 scroll-mt-24"></article>
+    <ul id="fillingList" class="mt-6 lg:mt-8 grid grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-5"></ul>
+  </div>
+</section>
+
+<!-- ============ 4. КОНСТРУКТОР (анонс) ============ -->
+<section class="bg-cream py-16 lg:py-24 -mt-px">
+  <div class="mx-auto max-w-[1360px] px-4 sm:px-8 grid lg:grid-cols-12 gap-10 items-center">
+    <div class="lg:col-span-5">
+      <h2><span class="block font-script text-wine text-[60px] lg:text-[88px] leading-[.8]">Соберите</span>
+        <span class="block font-serif uppercase tracking-[.06em] text-[22px] lg:text-[30px] mt-2 lg:pl-20">свой десерт за 7 шагов</span></h2>
+      <p class="mt-5 max-w-md text-[16px] leading-relaxed text-cocoa/75">Повод, формат, начинка, оформление и дата — по шагам, с подсказками и ориентировочной ценой. К любому шагу можно вернуться.</p>
+      <a href="builder.html?step=1" target="_top" class="mt-8 group inline-flex h-14 items-center gap-3 rounded-full bg-wine px-8 text-[16px] font-semibold text-cream-light hover:bg-wine-dark transition">Начать сборку
+        <svg class="transition-transform group-hover:translate-x-1" width="18" height="12" viewBox="0 0 18 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M0 6h16M11 1l5 5-5 5"/></svg></a>
+    </div>
+    <ol class="lg:col-span-7 grid grid-cols-2 sm:grid-cols-4 gap-3 counter-reset">
+      <li class="rounded-[24px] bg-cream-light p-4 lg:p-5"><span class="font-serif text-[32px] text-gold leading-none">01</span><p class="mt-3 font-semibold">Повод</p><p class="text-[13px] text-cocoa/60">день рождения, свадьба…</p></li>
+      <li class="rounded-[24px] bg-cream-light p-4 lg:p-5"><span class="font-serif text-[32px] text-gold leading-none">02</span><p class="mt-3 font-semibold">Формат</p><p class="text-[13px] text-cocoa/60">торт, бенто, капкейки</p></li>
+      <li class="rounded-[24px] bg-cream-light p-4 lg:p-5"><span class="font-serif text-[32px] text-gold leading-none">03</span><p class="mt-3 font-semibold">Количество</p><p class="text-[13px] text-cocoa/60">гости → вес</p></li>
+      <li class="rounded-[24px] bg-wine text-cream-light p-4 lg:p-5"><span class="font-serif text-[32px] text-cream leading-none">04</span><p class="mt-3 font-semibold">Начинка</p><p class="text-[13px] text-cream/70">6 вкусов</p></li>
+      <li class="rounded-[24px] bg-cream-light p-4 lg:p-5"><span class="font-serif text-[32px] text-gold leading-none">05</span><p class="mt-3 font-semibold">Оформление</p><p class="text-[13px] text-cocoa/60">цвет, декор, фото</p></li>
+      <li class="rounded-[24px] bg-cream-light p-4 lg:p-5"><span class="font-serif text-[32px] text-gold leading-none">06</span><p class="mt-3 font-semibold">Дата</p><p class="text-[13px] text-cocoa/60">доставка или самовывоз</p></li>
+      <li class="rounded-[24px] bg-cream-light p-4 lg:p-5"><span class="font-serif text-[32px] text-gold leading-none">07</span><p class="mt-3 font-semibold">Контакты</p><p class="text-[13px] text-cocoa/60">как с вами связаться</p></li>
+      <li class="rounded-[24px] border border-dashed border-wine/40 p-4 lg:p-5 flex flex-col justify-between"><span class="font-hand text-[18px] text-berry leading-tight">и сразу видно примерную цену</span><span class="font-serif text-[22px] text-wine">≈ 8 300 ₽</span></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ 5. ГАЛЕРЕЯ ============ -->
+<section id="gallery" class="py-16 lg:py-24">
+  <div class="mx-auto max-w-[1360px] px-4 sm:px-8">
+    <div class="flex flex-wrap items-end justify-between gap-6 mb-8">
+      <h2><span class="block font-script text-wine text-[60px] lg:text-[88px] leading-[.8]">Галерея</span>
+        <span class="block font-serif uppercase tracking-[.06em] text-[20px] lg:text-[26px] mt-2 lg:pl-20">работы для разных поводов</span></h2>
+      <ul id="galFilters" class="flex gap-2 overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 text-[14px]">
+        <li><button data-filter="all" aria-pressed="true" class="h-11 rounded-full px-5 whitespace-nowrap transition bg-wine text-cream-light">Все</button></li>
+        <li><button data-filter="birthday" aria-pressed="false" class="h-11 rounded-full px-5 whitespace-nowrap transition border border-cocoa/15 hover:border-wine">Дни рождения</button></li>
+        <li><button data-filter="wedding" aria-pressed="false" class="h-11 rounded-full px-5 whitespace-nowrap transition border border-cocoa/15 hover:border-wine">Свадьбы</button></li>
+        <li><button data-filter="kids" aria-pressed="false" class="h-11 rounded-full px-5 whitespace-nowrap transition border border-cocoa/15 hover:border-wine">Детские</button></li>
+        <li><button data-filter="corporate" aria-pressed="false" class="h-11 rounded-full px-5 whitespace-nowrap transition border border-cocoa/15 hover:border-wine">Корпоративы</button></li>
+        <li><button data-filter="gift" aria-pressed="false" class="h-11 rounded-full px-5 whitespace-nowrap transition border border-cocoa/15 hover:border-wine">Подарки</button></li>
+      </ul>
+    </div>
+    <div id="galGrid" class="grid grid-cols-2 lg:grid-cols-4 grid-flow-dense auto-rows-[160px] sm:auto-rows-[220px] gap-3 lg:gap-5">
+      <figure data-cat="wedding" class="fade-in group relative row-span-2 overflow-hidden rounded-[28px]"><img src="https://images.unsplash.com/photo-1623428454614-abaf00244e52?w=700&q=75&fm=webp" alt="Свадебный ярусный торт с цветами" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy"><figcaption class="absolute left-3 bottom-3 rounded-full bg-cream-light/85 backdrop-blur px-3 py-1.5 font-hand text-[14px] text-wine">свадьба · 3 яруса</figcaption></figure>
+      <figure data-cat="birthday" class="fade-in group relative  overflow-hidden rounded-[28px]"><img src="https://images.unsplash.com/photo-1571622840901-92ae138bd36e?w=600&q=75&fm=webp" alt="Торт на день рождения с ягодами и топпером" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy"><figcaption class="absolute left-3 bottom-3 rounded-full bg-cream-light/85 backdrop-blur px-3 py-1.5 font-hand text-[14px] text-wine">день рождения</figcaption></figure>
+      <figure data-cat="gift" class="fade-in group relative col-span-1 lg:col-span-2 row-span-2 overflow-hidden rounded-[28px]"><img src="https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?w=900&q=75&fm=webp" alt="Шоколадный торт с градиентным декором" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy"><figcaption class="absolute left-3 bottom-3 rounded-full bg-cream-light/85 backdrop-blur px-3 py-1.5 font-hand text-[14px] text-wine">подарок на годовщину</figcaption></figure>
+      <figure data-cat="kids" class="fade-in group relative  overflow-hidden rounded-[28px]"><img src="https://images.unsplash.com/photo-1741969494234-7d4bcd1002ab?w=600&q=75&fm=webp" alt="Детский торт с радугой" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy"><figcaption class="absolute left-3 bottom-3 rounded-full bg-cream-light/85 backdrop-blur px-3 py-1.5 font-hand text-[14px] text-wine">детский праздник</figcaption></figure>
+      <figure data-cat="corporate" class="fade-in group relative  overflow-hidden rounded-[28px]"><img src="https://images.unsplash.com/photo-1569864358642-9d1684040f43?w=600&q=75&fm=webp" alt="Макарон для корпоративного заказа" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy"><figcaption class="absolute left-3 bottom-3 rounded-full bg-cream-light/85 backdrop-blur px-3 py-1.5 font-hand text-[14px] text-wine">корпоратив · 60 шт</figcaption></figure>
+      <figure data-cat="gift" class="fade-in group relative  overflow-hidden rounded-[28px]"><img src="https://images.unsplash.com/photo-1595272568891-123402d0fb3b?w=600&q=75&fm=webp" alt="Минималистичный белый торт с черникой" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy"><figcaption class="absolute left-3 bottom-3 rounded-full bg-cream-light/85 backdrop-blur px-3 py-1.5 font-hand text-[14px] text-wine">просто так</figcaption></figure>
+      <figure data-cat="wedding" class="fade-in group relative  overflow-hidden rounded-[28px]"><img src="https://images.unsplash.com/photo-1535254973040-607b474cb50d?w=600&q=75&fm=webp" alt="Свадебный торт с живыми розами" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy"><figcaption class="absolute left-3 bottom-3 rounded-full bg-cream-light/85 backdrop-blur px-3 py-1.5 font-hand text-[14px] text-wine">свадьба · живые цветы</figcaption></figure>
+      <figure data-cat="birthday" class="fade-in group relative  overflow-hidden rounded-[28px]"><img src="https://images.unsplash.com/photo-1702744382319-20efefc9dc19?w=600&q=75&fm=webp" alt="Шоколадный торт с безе на день рождения" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy"><figcaption class="absolute left-3 bottom-3 rounded-full bg-cream-light/85 backdrop-blur px-3 py-1.5 font-hand text-[14px] text-wine">день рождения · 30 лет</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6. О КОНДИТЕРЕ ============ -->
+<section id="about" class="px-3 lg:px-8 scroll-mt-24">
+  <div class="mx-auto max-w-[1440px] rounded-[40px] lg:rounded-[64px] bg-wine text-cream-light overflow-hidden grid lg:grid-cols-2">
+    <div class="relative min-h-[340px] lg:min-h-[620px]">
+      <img src="https://images.unsplash.com/photo-1630507103234-00d3e621cae2?w=1000&q=75&fm=webp" alt="Руки кондитера украшают тарталетки ягодами" class="absolute inset-0 w-full h-full object-cover" loading="lazy">
+      <p class="absolute left-5 bottom-5 lg:left-8 lg:bottom-8 font-hand text-[20px] lg:text-[24px] text-cream-light [text-shadow:0_2px_10px_rgba(0,0,0,.6)] -rotate-3">каждый торт собираю сама</p>
+    </div>
+    <div class="p-6 sm:p-10 lg:p-16 flex flex-col justify-center">
+      <h2><span class="block font-script text-cream text-[56px] lg:text-[80px] leading-[.8]">Привет!</span>
+        <span class="block font-serif uppercase tracking-[.06em] text-[20px] lg:text-[26px] mt-3 text-cream/90">я — кондитер «Бархата»</span></h2>
+      <p class="mt-6 text-[16px] lg:text-[17px] leading-relaxed text-cream/80 max-w-xl">Пеку дома с 2021 года. Начинки готовлю сама: конфи, курды, карамель. Сначала обсуждаем идею, потом я рисую эскиз — и только после этого печём.</p>
+      <ul class="mt-8 grid sm:grid-cols-3 gap-3">
+        <li class="rounded-[22px] bg-cream-light/[.07] ring-1 ring-cream/10 p-4"><p class="font-serif text-[30px] leading-none text-cream">6</p><p class="mt-2 text-[13px] text-cream/70">авторских начинок</p></li>
+        <li class="rounded-[22px] bg-cream-light/[.07] ring-1 ring-cream/10 p-4"><p class="font-serif text-[30px] leading-none text-cream">0</p><p class="mt-2 text-[13px] text-cream/70">консервантов и готовых смесей</p></li>
+        <li class="rounded-[22px] bg-cream-light/[.07] ring-1 ring-cream/10 p-4"><p class="font-serif text-[30px] leading-none text-cream">эскиз</p><p class="mt-2 text-[13px] text-cream/70">до начала работы</p></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7. ДОСТАВКА + FAQ ============ -->
+<section id="delivery" class="py-16 lg:py-24">
+  <div class="mx-auto max-w-[1360px] px-4 sm:px-8 grid lg:grid-cols-12 gap-10">
+    <div class="lg:col-span-5">
+      <h2><span class="block font-script text-wine text-[60px] lg:text-[88px] leading-[.8]">Доставка</span>
+        <span class="block font-serif uppercase tracking-[.06em] text-[20px] lg:text-[26px] mt-2 lg:pl-20">и самовывоз</span></h2>
+      <div class="mt-8 grid gap-3">
+        <div class="rounded-[28px] bg-cream p-5 lg:p-6 flex gap-4"><span class="shrink-0 grid place-items-center w-12 h-12 rounded-full bg-cream-light text-wine"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg></span><div><h3 class="font-semibold text-[17px]">Доставка по городу</h3><p class="mt-1 text-[14px] text-cocoa/70">от 500 ₽, точная сумма — по тарифу такси. Везу в термобоксе, в оговорённое окно.</p></div></div>
+        <div class="rounded-[28px] bg-cream p-5 lg:p-6 flex gap-4"><span class="shrink-0 grid place-items-center w-12 h-12 rounded-full bg-cream-light text-wine"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 21s-7-6.2-7-11a7 7 0 0114 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></span><div><h3 class="font-semibold text-[17px]">Самовывоз — бесплатно</h3><p class="mt-1 text-[14px] text-cocoa/70">по предварительной договорённости, адрес пришлю после подтверждения заказа.</p></div></div>
+        <div class="rounded-[28px] border border-dashed border-wine/35 p-5 lg:p-6"><p class="font-hand text-[19px] text-berry">Совет</p><p class="mt-1 text-[14px] text-cocoa/75">Заказывайте минимум за 3 дня, а на праздники — за 7–10 дней: в декабре даты заканчиваются быстро.</p></div>
+      </div>
+    </div>
+    <div class="lg:col-span-7">
+      <h3 class="font-serif uppercase tracking-[.06em] text-[20px] lg:text-[24px] mb-4">Частые вопросы</h3>
+      <div class="divide-y divide-cocoa/10 border-y border-cocoa/10">
+        <details open class="group py-5"><summary class="flex items-center justify-between gap-4 cursor-pointer text-[17px] font-semibold">Как формируется цена?<span class="plus grid place-items-center w-9 h-9 rounded-full bg-cream text-wine text-[22px] transition-transform">+</span></summary><p class="mt-3 text-[15px] leading-relaxed text-cocoa/75 max-w-2xl">Вес × цена начинки за килограмм, плюс сложность декора. Конструктор сразу показывает ориентир, а точную сумму я подтверждаю в переписке.</p></details>
+        <details class="group py-5"><summary class="flex items-center justify-between gap-4 cursor-pointer text-[17px] font-semibold">Нужна ли предоплата?<span class="plus grid place-items-center w-9 h-9 rounded-full bg-cream text-wine text-[22px] transition-transform">+</span></summary><p class="mt-3 text-[15px] leading-relaxed text-cocoa/75 max-w-2xl">Да, 50% после согласования эскиза — так я бронирую дату и закупаю продукты. Остаток — при получении.</p></details>
+        <details class="group py-5"><summary class="flex items-center justify-between gap-4 cursor-pointer text-[17px] font-semibold">Сколько хранится торт?<span class="plus grid place-items-center w-9 h-9 rounded-full bg-cream text-wine text-[22px] transition-transform">+</span></summary><p class="mt-3 text-[15px] leading-relaxed text-cocoa/75 max-w-2xl">В холодильнике до 3 суток. Достаньте торт за 30–40 минут до подачи — вкус раскроется лучше.</p></details>
+        <details class="group py-5"><summary class="flex items-center justify-between gap-4 cursor-pointer text-[17px] font-semibold">Можно без орехов или с меньшим количеством сахара?<span class="plus grid place-items-center w-9 h-9 rounded-full bg-cream text-wine text-[22px] transition-transform">+</span></summary><p class="mt-3 text-[15px] leading-relaxed text-cocoa/75 max-w-2xl">Да. Отметьте это в конструкторе на шаге «Контакты» — подберу начинку и обсудим состав лично.</p></details>
+        <details class="group py-5"><summary class="flex items-center justify-between gap-4 cursor-pointer text-[17px] font-semibold">Вы повторите торт по фото?<span class="plus grid place-items-center w-9 h-9 rounded-full bg-cream text-wine text-[22px] transition-transform">+</span></summary><p class="mt-3 text-[15px] leading-relaxed text-cocoa/75 max-w-2xl">Беру фото как вдохновение и делаю своё прочтение: точную копию чужой работы не повторяю, но настроение передам.</p></details>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ============ ПОДВАЛ ============ -->
+<footer class="bg-wine-dark text-cream-light rounded-t-[40px] lg:rounded-t-[72px]">
+  <div class="mx-auto max-w-[1360px] px-4 sm:px-8 pt-14 lg:pt-20 pb-8">
+    <div class="grid lg:grid-cols-12 gap-10 items-end">
+      <div class="lg:col-span-7">
+        <p class="font-script text-cream text-[64px] lg:text-[110px] leading-[.8]">Бархат</p>
+        <p class="mt-4 font-serif uppercase tracking-[.08em] text-[18px] lg:text-[22px] text-cream/85">десерты, которые хочется рассмотреть</p>
+      </div>
+      <div class="lg:col-span-5 flex flex-col sm:flex-row lg:justify-end gap-3">
+        <a href="builder.html?step=1" target="_top" class="inline-flex h-14 items-center justify-center rounded-full bg-cream-light px-8 font-semibold text-wine">Собрать свой десерт</a>
+        <a href="builder.html" target="_top" class="inline-flex h-14 items-center justify-center rounded-full ring-1 ring-cream/30 px-8 font-semibold">Написать в Telegram</a>
+      </div>
+    </div>
+    <div class="mt-12 pt-6 border-t border-cream/10 flex flex-wrap justify-between gap-3 text-[13px] text-cream/55">
+      <p>Город · @username · +7 (000) 000-00-00</p>
+      <p>Концепт сайта. Данные и цены демонстрационные.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const K = window.KD, U = K.U, $ = s => document.querySelector(s);
+  const check = '<svg width="12" height="10" viewBox="0 0 12 10" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 5l3.5 3.5L11 1"/></svg>';
+  const arrow = '<svg class="transition-transform group-hover:translate-x-1" width="18" height="12" viewBox="0 0 18 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M0 6h16M11 1l5 5-5 5"/></svg>';
+
+  // --- меню ---
+  const menu = $('#mobileMenu'), btn = $('#menuBtn');
+  const setMenu = open => { menu.classList.toggle('hidden', !open); btn.setAttribute('aria-expanded', open); document.documentElement.style.overflow = open ? 'hidden' : ''; if (open) menu.querySelector('button[data-close]').focus(); else btn.focus({preventScroll: true}); };
+  btn.addEventListener('click', () => setMenu(true));
+  menu.addEventListener('click', e => { if (e.target.closest('[data-close]')) setMenu(false); });
+  addEventListener('keydown', e => { if (e.key === 'Escape' && !menu.classList.contains('hidden')) setMenu(false); });
+  addEventListener('resize', () => { if (innerWidth >= 1024 && !menu.classList.contains('hidden')) setMenu(false); });
+
+  // --- начинки ---
+  let current = 'pistachio';
+  function renderFeatured() {
+    const f = K.FILLINGS.find(x => x.id === current), a = f.arrows;
+    $('#featured').innerHTML = `
+      <figure class="fade-in lg:col-span-6 relative aspect-[16/11] rounded-[28px] lg:rounded-[36px] overflow-hidden">
+        <img src="${U(f.img, 1100, 756, f.fp || '')}" alt="${f.name} в разрезе" class="absolute inset-0 w-full h-full object-cover">
+        ${a ? `<div class="absolute inset-0 bg-gradient-to-r from-wine-dark/70 via-transparent to-transparent"></div>
+        <svg class="draw absolute inset-0 w-full h-full text-[#E2C48F] [filter:drop-shadow(0_1px_3px_rgba(69,9,26,.7))]" viewBox="0 0 100 68.75" fill="none" aria-hidden="true">${a.paths.map((d, i) => `<g><path pathLength="1" d="${d}" stroke="currentColor" stroke-width=".4" stroke-linecap="round" style="animation-delay:${i * .15}s"/></g>`).join('')}</svg>
+        ${a.labels.map(([t, x, y]) => `<span class="absolute ${x < 0 ? 'text-right' : ''} w-[21%] font-hand text-cream-light text-[12px] sm:text-[16px] lg:text-[18px] leading-[1.05] [text-shadow:0_1px_8px_rgba(69,9,26,.9)]" style="${x < 0 ? 'right' : 'left'}:${Math.abs(x)}%;top:${y}%">${t}</span>`).join('')}` : ''}
+      </figure>
+      <div class="fade-in lg:col-span-6 px-3 pb-4 lg:px-2 lg:pr-10">
+        ${f.hit ? '<p class="inline-flex items-center gap-2 rounded-full bg-pistachio/20 text-[#D5E2BC] px-3 py-1.5 text-[13px] mb-4"><span class="w-2 h-2 rounded-full bg-pistachio"></span>Хит сезона</p>' : ''}
+        <h3 class="font-serif text-[40px] lg:text-[56px] leading-none">${f.name}</h3>
+        <p class="mt-4 text-[16px] lg:text-[17px] leading-relaxed text-cream/80">${f.desc}</p>
+        <dl class="mt-6 grid grid-cols-2 gap-x-6 gap-y-4 text-[14px]">
+          <div><dt class="text-cream/55 uppercase tracking-[.12em] text-[11px]">Вкус</dt><dd class="mt-1">${f.taste}</dd></div>
+          <div><dt class="text-cream/55 uppercase tracking-[.12em] text-[11px]">Подходит для</dt><dd class="mt-1">торт, бенто, капкейки</dd></div>
+        </dl>
+        <div class="mt-6 rounded-2xl bg-cream-light/5 ring-1 ring-cream/10 p-4">
+          <p class="text-cream/55 uppercase tracking-[.12em] text-[11px]">Состав</p>
+          <p class="mt-2 text-[14px] leading-relaxed text-cream/85">${f.comp}</p>
+          <p class="mt-2 text-[13px] text-[#F2C7A0]">Содержит: ${f.allergens}.</p>
+        </div>
+        <div class="mt-7 flex flex-wrap items-center gap-4">
+          <a href="builder.html?filling=${f.id}" target="_top" class="group inline-flex h-14 items-center gap-3 rounded-full bg-cream-light px-8 text-[16px] font-semibold text-wine hover:bg-cream transition">Выбрать начинку ${arrow}</a>
+          <p class="font-serif text-[30px] leading-none">${f.price.toLocaleString('ru-RU')} <span class="font-sans text-[16px] text-cream/70">₽/кг</span></p>
+        </div>
+      </div>`;
+  }
+  function renderList() {
+    $('#fillingList').innerHTML = K.FILLINGS.map(f => {
+      const on = f.id === current, a = f.id === 'redvelvet' && f.arrows;
+      return `<li><button data-fill="${f.id}" aria-pressed="${on}" class="group w-full h-full text-left rounded-[28px] p-2 transition ${on ? 'bg-cream-light text-cocoa ring-4 ring-gold/80' : 'bg-cream-light/[.06] ring-1 ring-cream/10 hover:bg-cream-light/[.12]'}">
+        <div class="relative aspect-[16/11] rounded-[22px] overflow-hidden">
+          <img src="${U(f.img, 600, 412, f.fp || '')}" alt="${f.name} в разрезе" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy">
+          ${a ? `<svg class="absolute inset-0 w-full h-full text-[#E2C48F] [filter:drop-shadow(0_1px_2px_rgba(0,0,0,.6))]" viewBox="0 0 100 68.75" fill="none" aria-hidden="true">${a.paths.slice(0, 3).map(d => `<path d="${d}" stroke="currentColor" stroke-width=".45"/>`).join('')}</svg>
+          ${a.labels.slice(0, 3).map(([t, x, y]) => `<span class="hidden sm:block absolute w-[22%] font-hand text-[11px] lg:text-[15px] leading-[1.05] text-cream-light [text-shadow:0_1px_6px_rgba(0,0,0,.9)]" style="left:${x}%;top:${y}%">${t}</span>`).join('')}` : ''}
+          ${on ? `<span class="absolute right-2 top-2 inline-flex items-center gap-1.5 rounded-full bg-wine text-cream-light px-3 h-8 text-[12px] font-semibold">${check}Открыта</span>` : ''}
+        </div>
+        <div class="p-3 lg:p-4 flex items-start justify-between gap-2">
+          <div><h3 class="font-semibold text-[15px] lg:text-[18px]">${f.name}</h3><p class="hidden sm:block text-[14px] ${on ? 'text-cocoa/65' : 'text-cream/65'} mt-1">${f.short}</p><p class="mt-2 text-[14px] font-semibold ${on ? 'text-wine' : 'text-cream'}">${f.price.toLocaleString('ru-RU')} ₽/кг</p></div>
+          <span class="shrink-0 grid place-items-center w-10 h-10 rounded-full ${on ? 'bg-wine text-cream-light' : 'ring-1 ring-cream/30 text-cream text-[20px]'}" aria-hidden="true">${on ? check : '+'}</span>
+        </div></button></li>`;
+    }).join('');
+  }
+  $('#fillingList').addEventListener('click', e => {
+    const b = e.target.closest('[data-fill]'); if (!b || b.dataset.fill === current) return;
+    current = b.dataset.fill; renderFeatured(); renderList();
+    const r = $('#featured').getBoundingClientRect();
+    if (r.top < 0 || r.top > innerHeight * .4) $('#featured').scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start'});
+  });
+  renderFeatured(); renderList();
+
+  // --- галерея ---
+  $('#galFilters').addEventListener('click', e => {
+    const b = e.target.closest('[data-filter]'); if (!b) return;
+    const v = b.dataset.filter;
+    $('#galFilters').querySelectorAll('button').forEach(x => {
+      const on = x === b; x.setAttribute('aria-pressed', on);
+      x.className = 'h-11 rounded-full px-5 whitespace-nowrap transition ' + (on ? 'bg-wine text-cream-light' : 'border border-cocoa/15 hover:border-wine');
+    });
+    $('#galGrid').classList.toggle('filtered', v !== 'all');
+    $('#galGrid').querySelectorAll('figure').forEach(f => {
+      const show = v === 'all' || f.dataset.cat === v;
+      f.hidden = !show; if (show) { f.classList.remove('fade-in'); void f.offsetWidth; f.classList.add('fade-in'); }
+    });
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Конструктор десерта — Бархат (концепт)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bad+Script&family=Cormorant+Garamond:wght@500;600&family=Great+Vibes&family=Manrope:wght@400;500;600;700&display=swap&subset=cyrillic" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script src="_tw.js"></script>
+<script src="_data.js"></script>
+<style>
+  .step-in{animation:stepin .35s cubic-bezier(.2,.7,.2,1) both}
+  @keyframes stepin{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}}
+  .sheet{animation:sheet .4s cubic-bezier(.2,.8,.2,1) both}
+  @keyframes sheet{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+  @media (min-width:1024px){@keyframes sheet{from{transform:translateX(40px);opacity:0}to{transform:none;opacity:1}}}
+  .draw path{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1s .3s cubic-bezier(.2,.7,.2,1) forwards}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  .pick{transition:background-color .2s,color .2s,box-shadow .2s,transform .15s}
+  .pick:active{transform:scale(.98)}
+  .tick{animation:tick .15s ease-out both}@keyframes tick{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+  .toast{animation:toast .3s cubic-bezier(.2,.8,.2,1) both}@keyframes toast{from{transform:translate(-50%,16px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
+  :focus-visible{outline:2px solid #B3263E;outline-offset:2px}
+  @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}.draw path{stroke-dashoffset:0}}
+</style>
+</head>
+<body class="bg-cream-light text-cocoa font-sans antialiased">
+
+<header class="sticky top-0 z-30 bg-cream-light/90 backdrop-blur-md border-b border-cocoa/5">
+  <div class="mx-auto max-w-[1360px] px-4 sm:px-8 h-16 lg:h-20 flex items-center justify-between gap-4">
+    <a href="./" target="_top" class="font-script text-wine text-[30px] lg:text-[36px] leading-none">Бархат</a>
+    <p class="hidden lg:block font-serif uppercase tracking-[.1em] text-[18px]">Конструктор десерта</p>
+    <a href="./" target="_top" class="inline-flex h-11 items-center gap-2 rounded-full px-4 text-[14px] text-cocoa/70 hover:bg-cream">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M1 1l10 10M11 1L1 11"/></svg><span class="hidden sm:inline">Выйти — черновик сохранится</span></a>
+  </div>
+  <div class="lg:hidden px-4 pb-3">
+    <div class="flex items-center justify-between text-[13px]"><span id="mStepLabel" class="font-semibold"></span><span id="mStepCount" class="text-cocoa/55"></span></div>
+    <div id="mProgress" class="mt-2 grid grid-cols-7 gap-1"></div>
+  </div>
+</header>
+
+<main class="mx-auto max-w-[1360px] px-4 sm:px-8 pt-6 lg:pt-10 pb-36 lg:pb-16">
+  <nav id="stepper" class="hidden lg:flex flex-wrap items-center gap-2 mb-8" aria-label="Шаги заказа"></nav>
+  <div class="grid lg:grid-cols-[1fr_380px] gap-8 items-start">
+    <div id="content" aria-live="polite"></div>
+    <aside class="hidden lg:block sticky top-28">
+      <div class="rounded-[32px] bg-wine text-cream-light p-3">
+        <div class="relative aspect-[16/10] rounded-[24px] overflow-hidden bg-wine-dark">
+          <img id="asideImg" src="" alt="" class="w-full h-full object-cover">
+          <p class="absolute left-4 bottom-3 font-hand text-[20px] [text-shadow:0_2px_8px_rgba(0,0,0,.6)]">ваш десерт</p>
+        </div>
+        <ul id="asideList" class="px-3 pt-4 divide-y divide-cream/10 text-[14px]"></ul>
+        <div class="m-1 mt-3 rounded-[24px] bg-cream-light text-cocoa p-5">
+          <p class="text-[12px] uppercase tracking-[.14em] text-cocoa/55">Ориентировочно</p>
+          <p id="price" class="font-serif text-[36px] text-wine leading-none mt-1"></p>
+          <p class="mt-2 text-[12px] leading-snug text-cocoa/60">Окончательную цену и возможность изготовления подтверждает кондитер.</p>
+          <div id="ctaWrap" class="mt-4 grid gap-2"></div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<div id="mBar" class="lg:hidden fixed inset-x-0 bottom-0 z-30 bg-cream-light/95 backdrop-blur-md border-t border-cocoa/10 px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom))]">
+  <div class="flex items-center gap-3">
+    <button id="mBack" data-act="back" class="grid place-items-center w-12 h-12 rounded-full bg-cream text-wine shrink-0 disabled:opacity-30" aria-label="Назад"><svg width="16" height="12" viewBox="0 0 18 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6H2M7 1L2 6l5 5"/></svg></button>
+    <div class="min-w-0"><p class="text-[11px] uppercase tracking-[.12em] text-cocoa/55">ориентировочно</p><p id="mPrice" class="font-serif text-[22px] leading-none text-wine whitespace-nowrap"></p></div>
+    <button id="mNext" data-act="next" class="ml-auto inline-flex h-12 items-center gap-2 rounded-full bg-wine px-6 font-semibold text-cream-light whitespace-nowrap disabled:bg-cocoa/25"></button>
+  </div>
+</div>
+
+<div id="drawer" class="hidden fixed inset-0 z-50"></div>
+<input id="fileInput" type="file" accept="image/*" multiple class="hidden">
+<div id="toast" class="hidden fixed left-1/2 bottom-28 lg:bottom-8 z-[60] max-w-[min(92vw,460px)] rounded-2xl bg-cocoa text-cream-light px-5 py-3 text-[14px] shadow-xl"></div>
+
+<script>
+(() => {
+const K = window.KD, U = K.U;
+const $ = s => document.querySelector(s);
+const params = new URLSearchParams(location.search);
+const DEMO = params.has('demo');
+const STORE = 'kd-builder-draft';
+const STEPS = ['Повод','Вид','Количество','Начинка','Оформление','Дата','Контакты'];
+const FIELDS = {1:['occasion'],2:['type'],3:['guests','weight','weightManual','bento','cup','set'],4:['filling'],5:['color','decor','inscription','wishes','files'],6:['date','method','address','slot'],7:['name','channel','contact','restrictions','comment','consent']};
+const MONTHS = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+const MONTHS_N = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+const blank = () => ({occasion:null,type:null,guests:10,weight:null,weightManual:false,bento:1,cup:6,set:12,filling:null,color:null,decor:[],inscription:'',wishes:'',files:[],date:null,method:'delivery',address:'',slot:'13–16',name:'',channel:'Telegram',contact:'',restrictions:[],comment:'',consent:false,sent:false});
+const byId = (arr, id) => arr.find(x => x.id === id);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const rub = n => Math.round(n).toLocaleString('ru-RU').replace(/,/g,' ') + ' ₽';
+const kg = n => String(n).replace('.', ',') + ' кг';
+const plural = (n, a, b, c) => { const m = n % 10, h = n % 100; return m === 1 && h !== 11 ? a : m >= 2 && m <= 4 && (h < 12 || h > 14) ? b : c; };
+const check = '<svg class="tick" width="12" height="10" viewBox="0 0 12 10" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 5l3.5 3.5L11 1"/></svg>';
+
+// ---------- состояние ----------
+let step = Math.min(8, Math.max(1, +params.get('step') || 1));
+let S = blank();
+if (DEMO) {
+  // экраны макета: заполнено всё до текущего шага включительно
+  const d = K.DEMO_STATE;
+  for (let i = 1; i <= Math.min(step, 7); i++) FIELDS[i].forEach(f => { if (f in d) S[f] = JSON.parse(JSON.stringify(d[f])); });
+  if (step >= 3) S.weightManual = true;
+} else {
+  try { const saved = JSON.parse(localStorage.getItem(STORE) || 'null'); if (saved) S = Object.assign(blank(), saved, {files: [], sent: false}); } catch (e) {}
+  if (params.get('type') && byId(K.TYPES, params.get('type'))) S.type = params.get('type');
+  if (params.get('filling') && byId(K.FILLINGS, params.get('filling'))) S.filling = params.get('filling');
+}
+let calMonth = null; // {y, m}
+let wasReview = DEMO && step === 8;
+let typeChanged = false;
+
+const save = () => { if (DEMO) return; try { const {files, ...rest} = S; localStorage.setItem(STORE, JSON.stringify(rest)); } catch (e) {} };
+
+// ---------- правила ----------
+const suggestWeight = g => Math.max(2, Math.ceil(g * 0.15 / 0.5) * 0.5);
+const weightOf = () => S.weight ?? suggestWeight(S.guests);
+const valid = n => ({
+  1: !!S.occasion, 2: !!S.type, 3: !!S.type, 4: !!S.filling, 5: true,
+  6: !!S.date && (S.method === 'pickup' || S.address.trim().length > 3),
+  7: !!S.name.trim() && !!S.contact.trim() && S.consent,
+}[n] ?? true);
+const firstInvalid = () => { for (let i = 1; i <= 7; i++) if (!valid(i)) return i; return 8; };
+const canGo = n => n <= firstInvalid();
+const need = n => ({1:'Выберите повод',2:'Выберите десерт',4:'Выберите начинку',6:S.date?'Укажите адрес доставки':'Выберите дату',7:!S.name.trim()?'Укажите имя':!S.contact.trim()?'Укажите контакт':'Нужно согласие на обработку данных'}[n] || '');
+
+function price() {
+  const t = S.type; if (!t) return null;
+  const f = byId(K.FILLINGS, S.filling); const fp = f ? f.price : 2800;
+  let base = 0;
+  if (t === 'torte') base = weightOf() * fp;
+  if (t === 'bento') base = S.bento * (1900 + (fp - 2800) / 2);
+  if (t === 'cupcakes') base = S.cup * (280 + (fp - 2800) / 20);
+  if (t === 'set') base = (S.set / 12) * (2400 + (fp - 2800));
+  let lo = base, hi = base;
+  S.decor.forEach(id => { const d = byId(K.DECOR, id); lo += d.add[0]; hi += d.add[1]; });
+  const deliv = S.date && S.method === 'delivery' ? 500 : 0;
+  lo += deliv; hi += deliv;
+  const r = n => Math.round(n / 100) * 100;
+  return {lo: r(lo), hi: r(hi), base: r(base), fp, deliv, exact: !!f};
+}
+function priceText() {
+  const p = price(); if (!p) return '—';
+  if (!p.exact) return 'от ' + rub(p.lo);
+  return p.lo === p.hi ? '≈ ' + rub(p.lo) : '≈ ' + rub(p.lo).replace(' ₽','') + '–' + rub(p.hi);
+}
+function qtyText() {
+  if (S.type === 'torte') return `${S.guests} ${plural(S.guests,'гость','гостя','гостей')} · ${kg(weightOf())}`;
+  if (S.type === 'bento') return `${S.bento} шт · ≈ 450 г каждый`;
+  if (S.type === 'cupcakes') return `${S.cup} шт`;
+  if (S.type === 'set') return `${S.set} десертов`;
+  return '';
+}
+const fmtDate = iso => { if (!iso) return ''; const [y, m, d] = iso.split('-').map(Number); return `${d} ${MONTHS[m - 1]}`; };
+function decorText() {
+  const parts = [];
+  if (S.color) parts.push(byId(K.COLORS, S.color).label);
+  if (S.decor.length) parts.push(S.decor.map(id => byId(K.DECOR, id).label.toLowerCase()).join(', '));
+  if (S.inscription.trim()) parts.push('надпись');
+  if (S.files.length) parts.push(`${S.files.length} фото`);
+  return parts.join(' · ') || 'на усмотрение кондитера';
+}
+const summary = () => [
+  ['Повод', S.occasion && byId(K.OCCASIONS, S.occasion).label],
+  ['Десерт', S.type && byId(K.TYPES, S.type).label],
+  ['Количество', S.type && qtyText()],
+  ['Начинка', S.filling && byId(K.FILLINGS, S.filling).name],
+  ['Оформление', step > 5 || DEMO && step >= 5 ? decorText() : (S.color || S.decor.length ? decorText() : '')],
+  ['Дата', S.date && `${fmtDate(S.date)}, ${S.method === 'delivery' ? S.slot + ' · доставка' : 'самовывоз ' + S.slot}`],
+  ['Контакты', S.name.trim() && S.contact.trim() && `${S.name.trim()} · ${S.channel} ${S.contact.trim()}`],
+];
+function messageText() {
+  const p = price(), f = byId(K.FILLINGS, S.filling);
+  const lines = ['Заявка с сайта · Бархат',
+    `Повод: ${byId(K.OCCASIONS, S.occasion)?.label.toLowerCase() || '—'}`,
+    `${byId(K.TYPES, S.type)?.label || '—'}: ${qtyText()}`,
+    `Начинка: ${f ? f.name : '—'}`,
+    `Оформление: ${decorText()}`];
+  if (S.inscription.trim()) lines.push(`Надпись: «${S.inscription.trim()}»`);
+  if (S.wishes.trim()) lines.push(`Пожелания: ${S.wishes.trim()}`);
+  lines.push(`${fmtDate(S.date)}, ${S.slot}, ${S.method === 'delivery' ? 'доставка: ' + S.address.trim() : 'самовывоз'}`);
+  if (S.restrictions.length) lines.push(`Ограничения: ${S.restrictions.map(id => byId(K.RESTRICTIONS, id).label.toLowerCase()).join(', ')}`);
+  if (S.comment.trim()) lines.push(`Комментарий: ${S.comment.trim()}`);
+  lines.push(`Ориентировочно: ${priceText()}`, `${S.name.trim()}, ${S.channel}: ${S.contact.trim()}`);
+  return lines.join('\n');
+}
+
+// ---------- шаблоны шагов ----------
+const H1 = (t, s) => `<h1 class="font-serif text-[30px] lg:text-[44px] leading-tight">${t}</h1><p class="mt-2 text-[15px] text-cocoa/65">${s}</p>`;
+const card = 'rounded-[28px] bg-cream p-5 lg:p-6';
+const label = 'text-[13px] uppercase tracking-[.12em] text-cocoa/55';
+const chip = on => `pick h-11 rounded-full px-4 inline-flex items-center gap-2 ${on ? 'bg-wine text-cream-light' : 'bg-cream-light hover:ring-2 hover:ring-wine/25'}`;
+const field = 'mt-3 w-full rounded-2xl bg-cream-light px-4 text-[16px] outline-none ring-1 ring-cocoa/10 focus:ring-2 focus:ring-wine';
+
+const T = {
+1: () => H1('Какой у вас повод?', 'От повода зависят подсказки по оформлению и размеру.') + `
+  <ul class="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3">${K.OCCASIONS.map(o => { const on = S.occasion === o.id; return `
+    <li><button data-act="set" data-k="occasion" data-v="${o.id}" aria-pressed="${on}" class="pick w-full h-full min-h-[104px] text-left rounded-[24px] p-4 ${on ? 'bg-wine text-cream-light ring-4 ring-gold/60' : o.id === 'other' ? 'border border-dashed border-cocoa/25 hover:border-wine' : 'bg-cream hover:ring-2 hover:ring-wine/30'}">
+      <span class="flex justify-between gap-2"><span class="font-semibold text-[16px]">${o.label}</span>${on ? check : ''}</span>
+      <span class="block mt-2 ${on ? 'font-hand text-[14px] text-cream/80' : 'text-[13px] text-cocoa/55'}">${o.hint}</span></button></li>`; }).join('')}</ul>`,
+
+2: () => H1('Что будем готовить?', 'Цены ориентировочные, итог зависит от веса и декора.') + `
+  <ul class="mt-6 grid grid-cols-2 gap-3 lg:gap-4">${K.TYPES.map(t => { const on = S.type === t.id; return `
+    <li><button data-act="set" data-k="type" data-v="${t.id}" aria-pressed="${on}" class="pick w-full text-left rounded-[28px] p-2 ${on ? 'bg-wine text-cream-light ring-4 ring-gold/60' : 'bg-cream hover:ring-2 hover:ring-wine/30'}">
+      <div class="relative aspect-[4/3] rounded-[22px] overflow-hidden"><img src="${U(t.img, 600, 450)}" alt="" class="w-full h-full object-cover">${on ? `<span class="absolute right-2 top-2 grid place-items-center w-9 h-9 rounded-full bg-cream-light text-wine">${check}</span>` : ''}</div>
+      <div class="p-3 lg:p-4"><p class="font-semibold text-[16px] lg:text-[18px]">${t.label}</p><p class="text-[13px] lg:text-[14px] ${on ? 'text-cream/75' : 'text-cocoa/60'}">${t.note}</p></div></button></li>`; }).join('')}</ul>`,
+
+3: () => {
+  if (S.type === 'torte') {
+    const w = weightOf(), sug = suggestWeight(S.guests);
+    const diam = {2:'Ø 20 см', 2.5:'Ø 22 см', 3:'Ø 24 см', 3.5:'Ø 26 см', 4:'2 яруса', 5:'2 яруса'}[w] || 'ярусы';
+    return H1('Сколько будет гостей?', 'Считаю около 150 г на человека, округляю до 0,5 кг. Минимальный заказ — 2 кг.') + `
+    <div class="mt-6 grid sm:grid-cols-2 gap-4">
+      <div class="${card}">
+        <p class="${label}">Гостей</p>
+        <div class="mt-3 flex items-center justify-between gap-3">
+          <button data-act="num" data-k="guests" data-d="-1" class="pick grid place-items-center w-14 h-14 rounded-full bg-cream-light text-wine text-[24px]" aria-label="Меньше гостей">−</button>
+          <output class="font-serif text-[64px] leading-none text-wine">${S.guests}</output>
+          <button data-act="num" data-k="guests" data-d="1" class="pick grid place-items-center w-14 h-14 rounded-full bg-wine text-cream-light text-[24px]" aria-label="Больше гостей">+</button>
+        </div>
+        <input data-in="guests" type="range" min="4" max="60" value="${S.guests}" class="mt-5 w-full accent-[#5E0F1F]" aria-label="Количество гостей">
+      </div>
+      <div class="${card}">
+        <p class="${label}">Вес торта</p>
+        <div class="mt-3 grid grid-cols-3 gap-2">${[2,2.5,3,3.5,4,5].map(v => `<button data-act="weight" data-v="${v}" aria-pressed="${w === v}" class="pick relative h-12 rounded-full text-[15px] ${w === v ? 'bg-wine text-cream-light font-semibold ring-4 ring-gold/50' : 'bg-cream-light hover:ring-2 hover:ring-wine/25'}">${kg(v)}${v === sug && w !== v ? '<span class="absolute -top-2 right-1 rounded-full bg-pistachio text-[10px] px-1.5 text-cocoa">совет</span>' : ''}</button>`).join('')}</div>
+        <p class="mt-4 flex items-start gap-2 text-[14px] text-cocoa/70"><span class="font-hand text-berry text-[17px] leading-none">подсказка:</span> для ${S.guests} ${plural(S.guests,'гостя','гостей','гостей')} подойдёт ${kg(sug)}. Выбрано ${kg(w)} — ${diam}.</p>
+      </div>
+    </div>`;
+  }
+  const cfg = {
+    bento: {t: 'Сколько бенто?', s: 'Один бенто ≈ 450 г — на 2–4 человек.', k: 'bento', opts: [1,2,3,4], min: 1, max: 10, step: 1, unit: 'шт'},
+    cupcakes: {t: 'Сколько капкейков?', s: 'Минимум 6 штук, одна начинка на всю партию.', k: 'cup', opts: [6,9,12,24], min: 6, max: 60, step: 3, unit: 'шт'},
+    set: {t: 'Какой набор?', s: '12 десертов в коробке: капкейки, трайфлы, макарон.', k: 'set', opts: [12,24,36], min: 12, max: 72, step: 12, unit: 'десертов'},
+  }[S.type];
+  return H1(cfg.t, cfg.s) + `
+    <div class="mt-6 ${card} max-w-xl">
+      <p class="${label}">Количество</p>
+      <div class="mt-3 flex items-center justify-between gap-3">
+        <button data-act="num" data-k="${cfg.k}" data-d="-${cfg.step}" data-min="${cfg.min}" data-max="${cfg.max}" class="pick grid place-items-center w-14 h-14 rounded-full bg-cream-light text-wine text-[24px]" aria-label="Меньше">−</button>
+        <output class="font-serif text-[64px] leading-none text-wine">${S[cfg.k]}</output>
+        <button data-act="num" data-k="${cfg.k}" data-d="${cfg.step}" data-min="${cfg.min}" data-max="${cfg.max}" class="pick grid place-items-center w-14 h-14 rounded-full bg-wine text-cream-light text-[24px]" aria-label="Больше">+</button>
+      </div>
+      <div class="mt-4 flex flex-wrap gap-2 text-[14px]">${cfg.opts.map(v => `<button data-act="setn" data-k="${cfg.k}" data-v="${v}" aria-pressed="${S[cfg.k] === v}" class="${chip(S[cfg.k] === v)}">${v} ${cfg.unit}</button>`).join('')}</div>
+    </div>`;
+},
+
+4: () => H1('Выберите начинку', 'Нажмите на карточку, чтобы выбрать. «Подробнее» — разрез и состав.') + `
+  <ul class="mt-6 grid grid-cols-2 xl:grid-cols-3 gap-3">${K.FILLINGS.map(f => { const on = S.filling === f.id; return `
+    <li class="relative rounded-[24px] p-2 pick ${on ? 'bg-wine text-cream-light ring-4 ring-gold/60' : 'bg-cream hover:ring-2 hover:ring-wine/30'}">
+      <button data-act="set" data-k="filling" data-v="${f.id}" aria-pressed="${on}" class="block w-full text-left">
+        <div class="relative aspect-[16/11] rounded-[18px] overflow-hidden"><img src="${U(f.img, 500, 344, f.fp || '')}" alt="" class="w-full h-full object-cover">${on ? `<span class="absolute left-2 top-2 inline-flex items-center gap-1.5 rounded-full bg-cream-light text-wine px-3 h-8 text-[12px] font-semibold">${check}Выбрана</span>` : ''}</div>
+        <div class="p-3 pb-1"><p class="font-semibold">${f.name}</p><p class="text-[13px] ${on ? 'text-cream/75' : 'text-cocoa/60'}">${f.price.toLocaleString('ru-RU')} ₽/кг</p></div>
+      </button>
+      <button data-act="drawer" data-v="${f.id}" class="ml-3 mb-2 mt-1 inline-flex h-9 items-center text-[13px] font-semibold underline underline-offset-4 ${on ? 'text-cream/85' : 'text-wine'}">Подробнее</button>
+    </li>`; }).join('')}</ul>`,
+
+5: () => H1('Как оформим?', 'Можно выбрать несколько стилей — я соберу их в один эскиз.') + `
+  <div class="mt-6 grid gap-4">
+    <div class="${card}"><p class="${label}">Цветовая гамма</p>
+      <div class="mt-4 flex flex-wrap gap-3">${K.COLORS.map(c => { const on = S.color === c.id; return `<button data-act="toggle1" data-k="color" data-v="${c.id}" aria-pressed="${on}" class="pick flex flex-col items-center gap-1.5 text-[12px] w-[68px] ${on ? 'font-semibold text-wine' : ''}"><span class="w-12 h-12 rounded-full ring-1 ring-cocoa/15 ${on ? 'ring-4 ring-wine ring-offset-2 ring-offset-cream' : ''}" style="background:${c.css}"></span>${c.label}</button>`; }).join('')}</div></div>
+    <div class="${card}"><p class="${label}">Стиль декора <span class="normal-case tracking-normal">· можно несколько</span></p>
+      <div class="mt-4 flex flex-wrap gap-2 text-[14px]">${K.DECOR.map(d => { const on = S.decor.includes(d.id); const add = d.add[1] ? `<span class="${on ? 'text-cream/70' : 'text-cocoa/50'}">+${d.add[0] === d.add[1] ? d.add[0].toLocaleString('ru-RU') : (d.add[0] ? d.add[0].toLocaleString('ru-RU') + '–' : 'до ') + d.add[1].toLocaleString('ru-RU')} ₽</span>` : ''; return `<button data-act="toggleArr" data-k="decor" data-v="${d.id}" aria-pressed="${on}" class="${chip(on)}">${on ? check : ''}${d.label} ${add}</button>`; }).join('')}</div></div>
+    <div class="grid sm:grid-cols-2 gap-4">
+      <div class="${card}"><label for="inscr" class="${label}">Надпись на десерте</label>
+        <input id="inscr" data-in="inscription" value="${esc(S.inscription)}" maxlength="30" placeholder="Например: С днём рождения!" class="${field} h-12">
+        <p class="mt-2 text-right text-[12px] text-cocoa/55"><span id="inscrCount">${S.inscription.length}</span> / 30</p></div>
+      <div class="${card}"><label for="wish" class="${label}">Пожелания</label>
+        <textarea id="wish" data-in="wishes" rows="3" placeholder="Настроение, цвета, что точно не нужно" class="${field} py-3 text-[15px]">${esc(S.wishes)}</textarea></div>
+    </div>
+    <div class="${card}"><p class="${label}">Фото-референс <span class="normal-case tracking-normal">· до 3 файлов</span></p>
+      <div id="drop" class="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-3">
+        ${S.files.map((f, i) => `<figure class="relative aspect-square rounded-[20px] overflow-hidden ring-2 ring-wine">
+          <img src="${f.url}" alt="Загруженный референс ${i + 1}" class="w-full h-full object-cover">
+          <button data-act="rmfile" data-v="${i}" class="absolute right-2 top-2 grid place-items-center w-9 h-9 rounded-full bg-cocoa/70 text-cream-light backdrop-blur" aria-label="Удалить фото"><svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 1l10 10M11 1L1 11"/></svg></button>
+          <figcaption class="absolute inset-x-2 bottom-2 rounded-xl bg-cream-light/90 backdrop-blur px-2.5 py-1.5 text-[11px] leading-tight"><span class="block font-semibold truncate">${esc(f.name)}</span><span class="text-cocoa/60">${(f.size / 1048576).toFixed(1).replace('.', ',')} МБ · загружено</span></figcaption></figure>`).join('')}
+        ${S.files.length < 3 ? `<button data-act="upload" class="pick aspect-square sm:aspect-auto min-h-[150px] rounded-[20px] border-2 border-dashed border-wine/30 bg-cream-light/60 hover:border-wine p-4 flex flex-col items-center justify-center text-center gap-2 ${S.files.length ? '' : 'col-span-2 sm:col-span-3'}">
+          <span class="grid place-items-center w-11 h-11 rounded-full bg-wine text-cream-light text-[22px]">+</span>
+          <span class="text-[14px] font-semibold">${S.files.length ? 'Добавить ещё фото' : 'Загрузить фото-референс'}</span>
+          <span class="text-[12px] text-cocoa/55">перетащите или выберите · JPG, PNG, HEIC до 10 МБ</span></button>` : ''}
+      </div></div>
+  </div>`,
+
+6: () => {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const min = new Date(today); min.setDate(min.getDate() + 3);
+  if (!calMonth) { const base = S.date ? new Date(S.date + 'T00:00') : min; calMonth = {y: base.getFullYear(), m: base.getMonth()}; }
+  const first = new Date(calMonth.y, calMonth.m, 1), days = new Date(calMonth.y, calMonth.m + 1, 0).getDate();
+  const lead = (first.getDay() + 6) % 7, busy = [5,6,19,20,26,27];
+  const atMin = calMonth.y === min.getFullYear() && calMonth.m === min.getMonth();
+  let cells = '<span></span>'.repeat(lead);
+  for (let d = 1; d <= days; d++) {
+    const dt = new Date(calMonth.y, calMonth.m, d), iso = `${calMonth.y}-${String(calMonth.m + 1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const off = dt < min || busy.includes(d), on = S.date === iso;
+    cells += `<button data-act="date" data-v="${iso}" ${off ? 'disabled' : ''} aria-pressed="${on}" aria-label="${d} ${MONTHS[calMonth.m]}${busy.includes(d) && dt >= min ? ', занято' : ''}" class="h-11 rounded-full ${on ? 'bg-wine text-cream-light font-semibold ring-4 ring-gold/50' : off ? 'text-cocoa/30 ' + (busy.includes(d) && dt >= min ? 'line-through' : '') : 'hover:bg-cream-light'}">${d}</button>`;
+  }
+  const del = S.method === 'delivery';
+  return H1('Когда и как получить?', `Ближайшая дата — ${min.getDate()} ${MONTHS[min.getMonth()]}. Зачёркнутые уже заняты.`) + `
+  <div class="mt-6 grid xl:grid-cols-[1.1fr_1fr] gap-4">
+    <div class="${card}">
+      <div class="flex items-center justify-between"><button data-act="cal" data-d="-1" ${atMin ? 'disabled' : ''} class="grid place-items-center w-11 h-11 rounded-full bg-cream-light disabled:opacity-30" aria-label="Предыдущий месяц">‹</button><p class="font-serif text-[22px]">${MONTHS_N[calMonth.m]} ${calMonth.y}</p><button data-act="cal" data-d="1" class="grid place-items-center w-11 h-11 rounded-full bg-cream-light" aria-label="Следующий месяц">›</button></div>
+      <div class="mt-4 grid grid-cols-7 gap-1 text-center text-[12px] text-cocoa/50 uppercase"><span>пн</span><span>вт</span><span>ср</span><span>чт</span><span>пт</span><span>сб</span><span>вс</span></div>
+      <div class="mt-1 grid grid-cols-7 gap-1 text-center text-[15px]">${cells}</div>
+    </div>
+    <div class="grid gap-4 content-start">
+      <div class="${card}"><p class="${label}">Способ получения</p>
+        <div class="mt-3 grid grid-cols-2 p-1 rounded-full bg-cream-light">
+          <button data-act="set" data-k="method" data-v="delivery" aria-pressed="${del}" class="pick h-12 rounded-full ${del ? 'bg-wine text-cream-light font-semibold' : 'text-cocoa/70'}">Доставка</button>
+          <button data-act="set" data-k="method" data-v="pickup" aria-pressed="${!del}" class="pick h-12 rounded-full ${!del ? 'bg-wine text-cream-light font-semibold' : 'text-cocoa/70'}">Самовывоз</button></div>
+        <p class="mt-3 text-[13px] text-cocoa/60">${del ? 'от 500 ₽, точнее — по тарифу такси' : 'бесплатно, адрес пришлю после подтверждения'}</p></div>
+      <div class="${card}">
+        ${del ? `<label for="addr" class="${label}">Адрес доставки</label><input id="addr" data-in="address" value="${esc(S.address)}" placeholder="Улица, дом, квартира" autocomplete="street-address" class="${field} h-12">` : ''}
+        <p class="${del ? 'mt-4 ' : ''}${label}">${del ? 'Окно доставки' : 'Время самовывоза'}</p>
+        <div class="mt-3 flex flex-wrap gap-2 text-[14px]">${K.SLOTS.map(s => `<button data-act="set" data-k="slot" data-v="${s}" aria-pressed="${S.slot === s}" class="${chip(S.slot === s)}">${s}</button>`).join('')}</div>
+      </div>
+    </div>
+  </div>`;
+},
+
+7: () => H1('Как с вами связаться?', 'Отвечу в течение дня и пришлю эскиз.') + `
+  <div class="mt-6 grid gap-4">
+    <div class="grid sm:grid-cols-2 gap-4">
+      <div class="${card}"><label for="name" class="${label}">Имя</label><input id="name" data-in="name" value="${esc(S.name)}" autocomplete="given-name" placeholder="Как к вам обращаться" class="${field} h-12"></div>
+      <div class="${card}"><p class="${label}">Удобный способ связи</p>
+        <div class="mt-3 grid grid-cols-3 p-1 rounded-full bg-cream-light text-[14px]">${['Telegram','WhatsApp','Звонок'].map(c => `<button data-act="set" data-k="channel" data-v="${c}" aria-pressed="${S.channel === c}" class="pick h-10 rounded-full ${S.channel === c ? 'bg-wine text-cream-light font-semibold' : 'text-cocoa/70'}">${c}</button>`).join('')}</div>
+        <input data-in="contact" aria-label="Контакт" value="${esc(S.contact)}" placeholder="${S.channel === 'Telegram' ? '@username или номер' : '+7 900 000-00-00'}" ${S.channel === 'Telegram' ? '' : 'type="tel" autocomplete="tel"'} class="${field} h-12"></div>
+    </div>
+    <div class="${card}"><p class="${label}">Пищевые ограничения <span class="normal-case tracking-normal">· обсудим лично</span></p>
+      <div class="mt-3 flex flex-wrap gap-2 text-[14px]">${K.RESTRICTIONS.map(r => { const on = S.restrictions.includes(r.id); return `<button data-act="toggleArr" data-k="restrictions" data-v="${r.id}" aria-pressed="${on}" class="${chip(on)}">${on ? check : ''}${r.label}</button>`; }).join('')}</div>
+      <label for="comment" class="mt-5 block ${label}">Комментарий</label>
+      <textarea id="comment" data-in="comment" rows="2" placeholder="Что ещё важно знать" class="${field} py-3 text-[15px]">${esc(S.comment)}</textarea></div>
+    <label class="flex items-start gap-3 text-[14px] text-cocoa/70 cursor-pointer"><input type="checkbox" data-in="consent" ${S.consent ? 'checked' : ''} class="mt-0.5 w-6 h-6 accent-[#5E0F1F] shrink-0">Согласна(ен) на обработку данных — только для связи по этому заказу.</label>
+  </div>`,
+
+8: () => {
+  if (S.sent) return `<div class="rounded-[36px] bg-wine text-cream-light p-8 lg:p-14 text-center">
+      <p class="font-script text-[64px] lg:text-[88px] leading-none">Спасибо!</p>
+      <p class="mt-4 text-[17px] text-cream/85 max-w-md mx-auto">Заявка у кондитера. Отвечу в течение дня в ${esc(S.channel)}, пришлю эскиз и точную цену.</p>
+      <p class="mt-6 text-[13px] text-cream/60">Это концепт: на настоящем сайте здесь откроется чат кондитера с готовым текстом.</p>
+      <div class="mt-8 flex flex-wrap justify-center gap-3"><button data-act="restart" class="h-12 rounded-full bg-cream-light text-wine px-6 font-semibold">Собрать ещё один десерт</button><a href="./" target="_top" class="inline-flex h-12 items-center rounded-full ring-1 ring-cream/30 px-6 font-semibold">На главную</a></div></div>`;
+  const p = price(), f = byId(K.FILLINGS, S.filling), t = byId(K.TYPES, S.type);
+  const baseLabel = S.type === 'torte' ? `Торт ${kg(weightOf())} × ${f.price.toLocaleString('ru-RU')} ₽` : `${t.label}, ${qtyText()}`;
+  const decorLo = S.decor.reduce((a, id) => a + byId(K.DECOR, id).add[0], 0), decorHi = S.decor.reduce((a, id) => a + byId(K.DECOR, id).add[1], 0);
+  return `<p class="font-hand text-[20px] text-berry">почти готово</p>` + H1('Проверьте заявку', 'Любой пункт можно изменить — вы вернётесь к нужному шагу, остальное сохранится.') + `
+  <ul class="mt-6 grid sm:grid-cols-2 gap-3">${summary().map(([k, v], i) => `<li class="rounded-[24px] bg-cream p-4 lg:p-5 flex items-start justify-between gap-4"><div class="min-w-0"><p class="text-[12px] uppercase tracking-[.12em] text-cocoa/55">${String(i + 1).padStart(2,'0')} · ${k}</p><p class="mt-1.5 font-semibold text-[15px] leading-snug break-words">${esc(v)}</p></div><button data-act="go" data-v="${i + 1}" class="pick shrink-0 inline-flex h-10 items-center rounded-full ring-1 ring-wine/25 px-4 text-[13px] font-semibold text-wine hover:bg-wine hover:text-cream-light">Изменить</button></li>`).join('')}
+    <li class="sm:col-span-2 rounded-[24px] bg-cream p-4 lg:p-5"><p class="text-[12px] uppercase tracking-[.12em] text-cocoa/55">Расчёт</p>
+      <dl class="mt-3 grid gap-2 text-[15px]">
+        <div class="flex justify-between gap-4"><dt>${esc(baseLabel)} <span class="text-cocoa/55">(${f.name.toLowerCase()})</span></dt><dd class="font-semibold whitespace-nowrap">${rub(p.base)}</dd></div>
+        <div class="flex justify-between gap-4"><dt>Декор${S.decor.length ? ': ' + S.decor.map(id => byId(K.DECOR, id).label.toLowerCase()).join(', ') : ''}</dt><dd class="font-semibold whitespace-nowrap">${decorHi ? '+' + (decorLo === decorHi ? rub(decorLo) : decorLo.toLocaleString('ru-RU') + '–' + rub(decorHi)) : 'без доплаты'}</dd></div>
+        ${S.inscription.trim() ? '<div class="flex justify-between gap-4"><dt>Надпись</dt><dd class="font-semibold whitespace-nowrap">в подарок</dd></div>' : ''}
+        <div class="flex justify-between gap-4"><dt>${S.method === 'delivery' ? `Доставка ${fmtDate(S.date)}, ${S.slot}` : 'Самовывоз'}</dt><dd class="font-semibold whitespace-nowrap">${S.method === 'delivery' ? 'от 500 ₽' : 'бесплатно'}</dd></div>
+        <div class="flex justify-between gap-4 border-t border-cocoa/10 pt-3 mt-1"><dt class="font-semibold">Ориентировочно</dt><dd class="font-serif text-[28px] lg:text-[30px] leading-none text-wine whitespace-nowrap">${priceText().replace('≈ ', '')}</dd></div>
+      </dl>
+      <p class="mt-3 text-[13px] text-cocoa/60">Окончательную цену и возможность изготовления подтверждает кондитер.</p></li>
+    <li class="sm:col-span-2 rounded-[24px] bg-[#E7EEF5] p-4 lg:p-5">
+      <p class="text-[12px] uppercase tracking-[.12em] text-cocoa/55">Так заявка придёт в Telegram</p>
+      <div class="mt-3 max-w-md rounded-[18px] rounded-bl-md bg-white p-4 text-[14px] leading-relaxed shadow-sm whitespace-pre-line">${esc(messageText()).replace(/^(.*)$/m, '<b>$1</b>')}</div>
+      <div class="mt-4 lg:hidden grid gap-2"><button data-act="send" class="h-14 rounded-full bg-wine font-semibold text-cream-light">Отправить в Telegram</button><button data-act="copy" class="h-12 rounded-full ring-1 ring-wine/30 font-semibold text-wine">Скопировать заявку</button></div>
+    </li></ul>`;
+},
+};
+
+// ---------- отрисовка ----------
+function renderChrome() {
+  const fi = firstInvalid();
+  $('#stepper').innerHTML = STEPS.map((s, i) => {
+    const n = i + 1, cur = n === step, d = valid(n) && n < fi + 1 && !cur && (n < step || canGo(n)), ok = canGo(n);
+    const cls = cur ? 'bg-wine text-cream-light' : d ? 'bg-cream text-wine hover:ring-2 hover:ring-wine/30' : ok ? 'text-cocoa/70 hover:bg-cream' : 'text-cocoa/35 cursor-not-allowed';
+    return `<button data-act="go" data-v="${n}" ${ok ? '' : 'disabled'} ${cur ? 'aria-current="step"' : ''} class="pick inline-flex h-11 items-center gap-2 rounded-full px-4 text-[14px] font-semibold ${cls}"><span class="grid place-items-center w-6 h-6 rounded-full ${cur ? 'bg-cream-light text-wine' : d && valid(n) && n < step ? 'bg-wine text-cream-light' : 'ring-1 ring-cocoa/20'} text-[12px]">${d && n < step ? check : n}</span>${s}</button>` + (i < 6 ? '<span class="w-3 h-px bg-cocoa/15"></span>' : '');
+  }).join('');
+  $('#mProgress').innerHTML = STEPS.map((s, i) => `<span class="h-1.5 rounded-full ${i < step ? 'bg-wine' : 'bg-cocoa/10'}"></span>`).join('');
+  $('#mStepLabel').textContent = step === 8 ? 'Проверка заявки' : STEPS[step - 1];
+  $('#mStepCount').textContent = step === 8 ? 'всё заполнено' : `Шаг ${step} из 7`;
+
+  const f = byId(K.FILLINGS, S.filling), t = byId(K.TYPES, S.type);
+  $('#asideImg').src = f ? U(f.img, 760, 475, f.fp || '') : t ? U(t.img, 760, 475) : U('1761637604698-0f9e9d3278ee', 760, 475);
+  $('#asideList').innerHTML = summary().map(([k, v], i) => {
+    const cur = i + 1 === step;
+    return `<li class="py-2.5 flex items-start justify-between gap-3 ${v || cur ? '' : 'opacity-40'}"><span class="text-cream/60 shrink-0">${k}</span><span class="text-right ${v ? '' : 'italic text-cream/60'}">${v ? esc(v) : cur ? 'выбираем…' : '—'}${v && !cur ? ` <button data-act="go" data-v="${i + 1}" class="ml-1 underline underline-offset-2 text-cream/60 hover:text-cream">изм.</button>` : ''}</span></li>`;
+  }).join('');
+  $('#price').textContent = priceText();
+  $('#mPrice').textContent = priceText();
+
+  const ok = valid(step), back = step > 1 && !S.sent;
+  const nextLabel = step === 7 ? 'Проверить заявку' : wasReview && step < 8 && firstInvalid() === 8 ? 'Сохранить и к заявке' : 'Далее';
+  $('#ctaWrap').innerHTML = step === 8
+    ? (S.sent ? '' : `<button data-act="send" class="h-14 rounded-full bg-wine font-semibold text-cream-light hover:bg-wine-dark">Отправить в Telegram</button><button data-act="copy" class="h-12 rounded-full ring-1 ring-wine/30 font-semibold text-wine hover:bg-cream">Скопировать заявку</button>`)
+    : `<button data-act="next" ${ok ? '' : 'disabled'} class="h-14 rounded-full bg-wine font-semibold text-cream-light hover:bg-wine-dark disabled:bg-cocoa/25 disabled:cursor-not-allowed">${nextLabel} →</button>${ok ? '' : `<p class="text-center text-[12px] text-berry">${need(step)}</p>`}${back ? '<button data-act="back" class="h-11 text-[14px] text-cocoa/60 hover:text-wine">← Назад</button>' : ''}`;
+  $('#mBack').disabled = !back;
+  $('#mNext').disabled = step < 8 && !ok;
+  $('#mNext').textContent = step === 8 ? 'Отправить' : step === 7 ? 'Проверить →' : (wasReview && firstInvalid() === 8 ? 'К заявке →' : 'Далее →');
+  $('#mNext').dataset.act = step === 8 ? 'send' : 'next';
+  $('#mBar').classList.toggle('hidden', !!S.sent);
+}
+function render(animate) {
+  $('#content').innerHTML = `<div class="${animate ? 'step-in' : ''}">${T[step]()}</div>`;
+  renderChrome();
+  save();
+}
+function go(n, push = true) {
+  n = Math.max(1, Math.min(8, n));
+  if (!canGo(n) && n > step) return;
+  if (n === 8) wasReview = true;
+  step = n; calMonth = null;
+  const u = new URL(location.href); u.searchParams.set('step', n); u.searchParams.delete('drawer');
+  if (push) history.pushState({step: n}, '', u);
+  render(true);
+  window.scrollTo({top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+}
+addEventListener('popstate', () => { step = Math.min(8, Math.max(1, +new URLSearchParams(location.search).get('step') || 1)); if (!canGo(step)) step = firstInvalid(); render(true); });
+
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.remove('hidden', 'toast'); void t.offsetWidth; t.classList.add('toast'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.add('hidden'), 3200); }
+async function copyText(txt) {
+  try { await navigator.clipboard.writeText(txt); return true; } catch (e) {
+    const ta = document.createElement('textarea'); ta.value = txt; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select();
+    let ok = false; try { ok = document.execCommand('copy'); } catch (e2) {} ta.remove(); return ok;
+  }
+}
+
+// ---------- шторка начинки ----------
+function openDrawer(id) {
+  const f = byId(K.FILLINGS, id); if (!f) return;
+  const a = f.arrows;
+  $('#drawer').innerHTML = `
+  <div data-act="closeDrawer" class="absolute inset-0 bg-cocoa/50 backdrop-blur-[2px]"></div>
+  <aside class="sheet absolute inset-x-0 bottom-0 max-h-[92vh] lg:max-h-none lg:inset-y-0 lg:left-auto lg:right-0 lg:w-[560px] overflow-y-auto rounded-t-[32px] lg:rounded-none lg:rounded-l-[40px] bg-wine text-cream-light" role="dialog" aria-modal="true" aria-label="Начинка ${f.name}">
+    <div class="lg:hidden mx-auto mt-3 w-12 h-1.5 rounded-full bg-cream/30"></div>
+    <div class="p-4 lg:p-6">
+      <div class="flex justify-end"><button data-act="closeDrawer" class="grid place-items-center w-11 h-11 rounded-full bg-cream-light/10 ring-1 ring-cream/20" aria-label="Закрыть"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 1l10 10M11 1L1 11"/></svg></button></div>
+      <figure class="relative mt-2 aspect-[16/11] rounded-[24px] overflow-hidden">
+        <img src="${U(f.img, 900, 619, f.fp || '')}" alt="${f.name} в разрезе" class="absolute inset-0 w-full h-full object-cover">
+        ${a ? `<div class="absolute inset-0 bg-gradient-to-r from-wine-dark/60 via-transparent to-transparent"></div>
+        <svg class="draw absolute inset-0 w-full h-full text-[#E2C48F] [filter:drop-shadow(0_1px_2px_rgba(0,0,0,.6))]" viewBox="0 0 100 68.75" fill="none" aria-hidden="true">${a.paths.map(d => `<path pathLength="1" d="${d}" stroke="currentColor" stroke-width=".4" stroke-linecap="round"/>`).join('')}</svg>
+        ${a.labels.map(([t, x, y]) => `<span class="absolute ${x < 0 ? `right-[${-x}%]` : `left-[${x}%]`} top-[${y}%] w-[21%] ${x < 0 ? 'text-right' : ''} font-hand text-[14px] lg:text-[17px] leading-[1.05] [text-shadow:0_1px_6px_rgba(0,0,0,.9)]">${t}</span>`).join('')}` : ''}
+      </figure>
+      <h2 class="mt-5 font-serif text-[36px] lg:text-[44px] leading-none">${f.name}</h2>
+      <p class="mt-3 text-[15px] leading-relaxed text-cream/80">${f.desc}</p>
+      <div class="mt-4 flex flex-wrap gap-2 text-[13px]">${f.taste.split(', ').map(x => `<span class="rounded-full bg-cream-light/10 px-3 py-1.5">${x}</span>`).join('')}</div>
+      <div class="mt-5 rounded-2xl bg-cream-light/5 ring-1 ring-cream/10 p-4">
+        <p class="text-cream/55 uppercase tracking-[.12em] text-[11px]">Состав</p>
+        <p class="mt-2 text-[14px] leading-relaxed text-cream/85">${f.comp}</p>
+        <p class="mt-2 text-[13px] text-[#F2C7A0]">Содержит: ${f.allergens}.</p>
+      </div>
+      <div class="sticky bottom-0 -mx-4 lg:-mx-6 mt-6 px-4 lg:px-6 py-4 bg-wine/95 backdrop-blur border-t border-cream/10 flex items-center gap-4">
+        <p class="font-serif text-[28px] leading-none whitespace-nowrap">${f.price.toLocaleString('ru-RU')} <span class="font-sans text-[14px] text-cream/70">₽/кг</span></p>
+        <button data-act="pickFilling" data-v="${f.id}" class="ml-auto inline-flex h-14 items-center gap-2 rounded-full bg-cream-light px-7 font-semibold text-wine">${S.filling === f.id ? check + ' Выбрана' : 'Выбрать начинку'}</button>
+      </div>
+    </div>
+  </aside>`;
+  $('#drawer').classList.remove('hidden');
+  document.documentElement.style.overflow = 'hidden';
+  $('#drawer [data-act="closeDrawer"][aria-label]').focus();
+}
+function closeDrawer() { $('#drawer').classList.add('hidden'); $('#drawer').innerHTML = ''; document.documentElement.style.overflow = ''; }
+addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#drawer').classList.contains('hidden')) closeDrawer(); });
+
+// ---------- загрузка фото ----------
+function addFiles(list) {
+  const room = 3 - S.files.length; let skipped = 0;
+  [...list].slice(0, Math.max(0, room)).forEach(f => {
+    if (!f.type.startsWith('image/') || f.size > 10 * 1048576) { skipped++; return; }
+    S.files.push({name: f.name, size: f.size, url: URL.createObjectURL(f)});
+  });
+  if (list.length > room) toast('Можно добавить не больше 3 фото');
+  else if (skipped) toast('Подходят только изображения до 10 МБ');
+  render(false);
+}
+$('#fileInput').addEventListener('change', e => { addFiles(e.target.files); e.target.value = ''; });
+document.addEventListener('dragover', e => { if (step === 5 && e.target.closest('#drop')) { e.preventDefault(); $('#drop').classList.add('outline', 'outline-2', 'outline-dashed', 'outline-wine', 'rounded-[20px]'); } });
+document.addEventListener('dragleave', e => { if (e.target.closest?.('#drop')) $('#drop')?.classList.remove('outline', 'outline-2', 'outline-dashed', 'outline-wine'); });
+document.addEventListener('drop', e => { if (step === 5 && e.target.closest('#drop')) { e.preventDefault(); addFiles(e.dataTransfer.files); } });
+
+// ---------- клики ----------
+document.addEventListener('click', async e => {
+  const el = e.target.closest('[data-act]'); if (!el || el.disabled) return;
+  const {act, k, v} = el.dataset;
+  switch (act) {
+    case 'set': if (k === 'type' && S.type !== v) { S.weight = null; S.weightManual = false; typeChanged = true; } S[k] = v; if (k === 'channel') S.contact = ''; render(false); break;
+    case 'setn': S[k] = +v; render(false); break;
+    case 'toggle1': S[k] = S[k] === v ? null : v; render(false); break;
+    case 'toggleArr': S[k] = S[k].includes(v) ? S[k].filter(x => x !== v) : [...S[k], v];
+      if (k === 'decor' && v === 'minimal' && S.decor.includes('minimal')) S.decor = ['minimal'];
+      else if (k === 'decor' && v !== 'minimal') S.decor = S.decor.filter(x => x !== 'minimal');
+      render(false); break;
+    case 'num': { const min = +(el.dataset.min || 4), max = +(el.dataset.max || 60); S[k] = Math.min(max, Math.max(min, S[k] + +el.dataset.d)); if (k === 'guests' && !S.weightManual) S.weight = null; render(false); break; }
+    case 'weight': S.weight = +v; S.weightManual = true; render(false); break;
+    case 'date': S.date = v; render(false); break;
+    case 'cal': calMonth.m += +el.dataset.d; if (calMonth.m < 0) { calMonth.m = 11; calMonth.y--; } if (calMonth.m > 11) { calMonth.m = 0; calMonth.y++; } render(false); break;
+    case 'next': if (!valid(step)) return; go(wasReview && firstInvalid() === 8 && step < 7 && !(step === 2 && typeChanged) ? 8 : step + 1); typeChanged = false; break;
+    case 'back': go(step - 1); break;
+    case 'go': go(+v); break;
+    case 'drawer': openDrawer(v); break;
+    case 'closeDrawer': closeDrawer(); break;
+    case 'pickFilling': S.filling = v; closeDrawer(); render(false); toast(`Начинка «${byId(K.FILLINGS, v).name}» выбрана`); break;
+    case 'upload': $('#fileInput').click(); break;
+    case 'rmfile': S.files.splice(+v, 1); render(false); break;
+    case 'copy': toast(await copyText(messageText()) ? 'Заявка скопирована — вставьте её в чат кондитера' : 'Не получилось скопировать'); break;
+    case 'send': await copyText(messageText()); S.sent = true; render(true); window.scrollTo({top: 0}); break;
+    case 'restart': S = blank(); wasReview = false; try { localStorage.removeItem(STORE); } catch (e2) {} go(1); break;
+  }
+});
+// поля ввода: без перерисовки, чтобы не терять фокус
+document.addEventListener('input', e => {
+  const k = e.target.dataset.in; if (!k) return;
+  if (k === 'consent') S.consent = e.target.checked;
+  else if (k === 'guests') { S.guests = +e.target.value; if (!S.weightManual) S.weight = null; render(false); return; }
+  else S[k] = e.target.value;
+  if (k === 'inscription') $('#inscrCount').textContent = S.inscription.length;
+  renderChrome(); save();
+});
+
+// ---------- старт ----------
+if (!DEMO && !canGo(step)) step = firstInvalid();
+history.replaceState({step}, '', (() => { const u = new URL(location.href); u.searchParams.set('step', step); return u; })());
+render(false);
+if (params.get('drawer')) openDrawer(params.get('drawer'));
+})();
+</script>
+</body>
+</html>
